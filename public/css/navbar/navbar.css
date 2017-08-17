@@ -10,12 +10,22 @@
 }
 
 body {
-	background: rgba(94, 165, 234, 0.81);
+	background: #f5f8fa;
 }
 
 .gn-menu-main {
 	position: fixed;
 	z-index: 1;
+	border-bottom: 1px solid #d3e0e9;
+}
+
+.gn-menu-wrapper{
+	border-top: 0;
+	border-right: 1px solid #d3e0e9;
+}
+
+.gn-menu-main > li{
+	border-right: 1px solid #d3e0e9;
 }
 
 .gn-menu-main li a{
