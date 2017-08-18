@@ -16,6 +16,7 @@ class Menu extends Migration
         //menu
         Schema::create('menu', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('name')->comment('名称');
             $table->string('description')->nullable()->comment('描述');
             $table->string('url')->comment('路由');
             $table->string('icon')->comment('图标');
