@@ -24,7 +24,11 @@ body {
 	border-right: 1px solid #d3e0e9;
 }
 
-.gn-menu-main > li{
+.gn-menu-main li{
+	border: none !important;
+}
+
+.gn-menu-main > li:first-child{
 	border-right: 1px solid #d3e0e9;
 }
 
@@ -43,4 +47,5 @@ body {
 	bottom: 0;
 	overflow: auto;
 	z-index: -1;
+	padding-top: 10px;
 }
