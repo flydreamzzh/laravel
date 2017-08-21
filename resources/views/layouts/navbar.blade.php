@@ -1,11 +1,12 @@
 <head>
-    <link rel="stylesheet" href="css/navbar/normalize.css">
-    <link rel="stylesheet" href="css/navbar/component.css">
-    <link rel="stylesheet" href="css/navbar/navbar.css">
-    <script src="js/navbar/modernizr.custom.js"></script>
+    <link rel="stylesheet" href="/css/navbar/normalize.css">
+    <link rel="stylesheet" href="/css/navbar/component.css">
+    <link rel="stylesheet" href="/css/navbar/navbar.css">
+    <script src="/js/navbar/modernizr.custom.js"></script>
 </head>
 
 <ul id="gn-menu" class="gn-menu-main">
+    @if(! Auth::guest())
     <li class="gn-trigger">
         <a class="gn-icon gn-icon-menu"><span>Menu</span></a>
         <nav class="gn-menu-wrapper">
@@ -15,7 +16,7 @@
                         <input placeholder="Search" type="search" class="gn-search">
                         <a class="gn-icon gn-icon-search"><span>Search</span></a>
                     </li>
-                    <li><a  href="menus" class="gn-icon gn-icon-cog">节点管理</a></li>
+                    <li><a  href="{{ route('menus.index') }}" class="gn-icon gn-icon-cog">节点管理</a></li>
                     <li>
                         <a class="gn-icon gn-icon-download">Downloads</a>
                         <ul class="gn-submenu">
@@ -37,6 +38,7 @@
             </div><!-- /gn-scroller -->
         </nav>
     </li>
+    @endif
     <li><a>主页</a></li>
     <li><a>更多</a></li>
 
