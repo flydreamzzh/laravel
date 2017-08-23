@@ -1,8 +1,8 @@
 <head>
-    <link rel="stylesheet" href="/css/navbar/normalize.css">
-    <link rel="stylesheet" href="/css/navbar/component.css">
-    <link rel="stylesheet" href="/css/navbar/navbar.css">
-    <script src="/js/navbar/modernizr.custom.js"></script>
+    <link rel="stylesheet" href="{{ asset('css/navbar/normalize.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/navbar/component.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/navbar/navbar.css') }}">
+    <script src="{{ asset('js/navbar/modernizr.custom.js') }}"></script>
 </head>
 
 <ul id="gn-menu" class="gn-menu-main">
@@ -66,8 +66,8 @@
     </li>
     @endif
 </ul>
-<script src="js/navbar/classie.js"></script>
-<script src="js/navbar/gnmenu.js"></script>
+<script src="{{ asset('js/navbar/classie.js') }}"></script>
+<script src="{{ asset('js/navbar/gnmenu.js') }}"></script>
 <script>
     new gnMenu( document.getElementById( 'gn-menu' ) );
 </script>
