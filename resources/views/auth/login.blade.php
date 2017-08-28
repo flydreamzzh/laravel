@@ -1,68 +1,82 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="{{ app()->getLocale() }}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-@section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">Login</div>
-                <div class="panel-body">
-                    <form class="form-horizontal" method="POST" action="{{ route('login') }}">
-                        {{ csrf_field() }}
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="email" class="col-md-4 control-label">E-Mail Address</label>
+    <title>{{ config('app.name', 'Laravel') }}</title>
 
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required autofocus>
+    <!-- Styles -->
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('layui/css/layui.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/login/style.css') }}" rel="stylesheet">
+</head>
+<body>
 
-                                @if ($errors->has('email'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
+<div id="particles">
+    <div id="app">
+        <div class="login row">
+            <div class="login-head">
+            <strong>账号登录</strong>
+            </div>
+            <div class="login-form">
+                <form class="form-horizontal" method="POST" action="{{ route('login') }}">
+                    {{ csrf_field() }}
+                    <div class="input-icon">
+                        <span class="glyphicon glyphicon-user"></span>
+                        <div>
+                            <input id="email" type="email"  placeholder="邮箱/手机号" name="email" value="{{ old('email') }}" required autofocus>
                         </div>
-
-                        <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            <label for="password" class="col-md-4 control-label">Password</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password" required>
-
-                                @if ($errors->has('password'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
+                    </div>
+                    <div class="input-icon">
+                        <span class="glyphicon glyphicon-lock"></span>
+                        <div>
+                            <input id="password" type="password"  placeholder="请输入密码" name="password" required>
                         </div>
-
-                        <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> Remember Me
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-8 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
-                                    Login
-                                </button>
-
-                                <a class="btn btn-link" href="{{ route('password.request') }}">
-                                    Forgot Your Password?
-                                </a>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                    <div class="checkbox" style="margin-top: -10px">
+                        <label>
+                            <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> 记住我
+                        </label>
+                        <a class="pull-right" href="{{ route('password.request') }}">
+                            忘记密码
+                        </a>
+                    </div>
+                    <div class="form-button">
+                        <input type="submit" class="btn btn-sm btn-danger" value="登录">
+                    </div>
+                </form>
             </div>
         </div>
+        <div class="bg-gray"></div>
     </div>
 </div>
-@endsection
+    <script type='text/javascript' src= {{asset('js/app.js')}} ></script>
+    <script type='text/javascript' src= {{asset('js/login/jquery.particleground.min.js')}} ></script>
+    <script type='text/javascript' src= {{asset('layui/layui.js')}} ></script>
+    <script type='text/javascript' src= {{asset('js/login/login.js')}} ></script>
+<script>
+    layui.use(['layer'], function(){
+        var layer = layui.layer
+            ,form = layui.form;
+        @if ($errors->has('email'))
+        layer.tips("{{ $errors->first('email') }}", '#email', {
+            tips: [3, '#3595CC'],
+            time: 4000
+        });
+        @endif
+
+        @if ($errors->has('password'))
+        layer.tips("{{ $errors->first('password') }}", '#password', {
+            tips: [3, '#78BA32'],
+            time: 4000
+        });
+        @endif
+    });
+</script>
+</body>
+</html>
