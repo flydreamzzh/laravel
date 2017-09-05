@@ -22,7 +22,7 @@
 <div class="content" id="app">
     @yield('content')
 </div>
-
+@yield('js')
 
 <script src="{{ mix('js/app.js') }}"></script>
 
