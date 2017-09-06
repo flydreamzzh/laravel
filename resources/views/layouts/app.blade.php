@@ -12,6 +12,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('layui/css/layui.css') }}"  media="all">
 
 </head>
 <body>
@@ -22,6 +23,9 @@
 <div class="content" id="app">
     @yield('content')
 </div>
+<footer>
+    © 2017 layui.com MIT license
+</footer>
 @yield('js')
 
 <script src="{{ mix('js/app.js') }}"></script>

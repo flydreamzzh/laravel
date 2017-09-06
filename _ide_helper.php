@@ -13654,7 +13654,12 @@ namespace  {
     class Validator extends \Illuminate\Support\Facades\Validator {}
 
     class View extends \Illuminate\Support\Facades\View {}
- 
+
+    /**
+     * 自定义添加
+     */
+    class Form extends Collective\Html\FormBuilder {}
+    class Html extends Collective\Html\HtmlBuilder {}
 }
 
 

@@ -2,45 +2,60 @@
 .menu{
     position: relative;
     width: 100%;
-    min-width: 1600px;
+    min-width: 1280px;
     height: 100%;
     overflow: hidden;
+    min-height: 700px;
 }
+
+
 
 .menu-list{
     position: relative;
     float: left;
-    width: 45%;
+    width: 50%;
     height: 100%;
-    background-color: white;
+    border-right: 1px solid #d3e0e9;
+}
+
+.menu-head {
+    width: 100%;
+    height: 50px;
+    overflow: hidden;
+    /*border-bottom: 1px solid #d3e0e9;*/
+    background-color: #009688;
+    box-shadow: 0 0 3px 1px silver;
+}
+
+.menu-table{
+    position: absolute;
+    width: 100%;
+    height: 400px;
+    top: 50px;
+    overflow: hidden;
+    padding: 0 10px;
 }
 
 .menu-operation{
     position: relative;
     width: 100%;
-    top: 0px;
-    bottom: 600px;
+    top: 400px;
+    bottom: 0;
+    border-top: 1px solid #d3e0e9;
 }
 
-.menu-table{
-    position: absolute;
-    padding-top: 10px;
-    width: 100%;
-    height: 600px;
-    bottom: 0;
-    overflow: hidden;
-}
 
 .menu-tree{
     float: left;
-    width: 20%;
+    width: 15%;
     height: 100%;
-    background-color: #2E2D3C;
+    border-right: 1px solid #d3e0e9;
 }
 
 .menu-info {
     float: left;
     width: 35%;
     height: 100%;
-    background-color: firebrick;
+    overflow: auto;
+    padding: 0 10px;
 }
