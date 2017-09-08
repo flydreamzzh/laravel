@@ -37,6 +37,13 @@ class MenuController extends AppBaseController
             ->with('menus', $menus);
     }
 
+    public function table()
+    {
+        $menus = $this->menuRepository->all();
+
+        return json_encode(['data' => $menus, 'count' => 100, 'code' => 0], true);
+    }
+
     /**
      * Show the form for creating a new Menu.
      *

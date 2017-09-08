@@ -10,31 +10,17 @@
                 </fieldset>
             </div>
             <div class="menu-table">
-                <table class="layui-table" style="height: 800px" lay-data="{height: '380', page:true, id:'idTest'}" lay-filter="demo">
+                <table class="layui-table" style="height: 800px" lay-data="{height: '380', page:true, id:'idTest', url:'/table'}" lay-filter="demo">
                     <thead>
                     <tr>
-                        <th lay-data="{checkbox: true, LAY_CHECKED: false, fixed: true}"></th>
-                        <th lay-data="{field:'name', width:100}">名称</th>
-                        <th lay-data="{field:'name', width:100}">名称</th>
-                        <th lay-data="{field:'description', width:250, sort: true}">描述</th>
-                        <th lay-data="{field:'url', width:200, sort: true}">路由</th>
+                        <th lay-data="{field:'name', width:150, fixed: true}">名称</th>
+                        <th lay-data="{field:'description', width:200, sort: true}">描述</th>
+                        <th lay-data="{field:'url', width:100, sort: true}">路由</th>
                         <th lay-data="{field:'lft', width:80, sort: true}">左值</th>
                         <th lay-data="{field:'rgt', width:80, sort: true}">右值</th>
                         <th lay-data="{fixed: 'right', width:160, align:'center', toolbar: '#barDemo'}"></th>
                     </tr>
                     </thead>
-                    <tbody>
-                    @foreach($menus as $menu)
-                        <tr>
-                            <td>{!! $menu->name !!}</td>
-                            <td>{!! $menu->description !!}</td>
-                            <td>{!! $menu->url !!}</td>
-                            <td>{!! $menu->icon !!}</td>
-                            <td>{!! $menu->lft !!}</td>
-                            <td>{!! $menu->rgt !!}</td>
-                        </tr>
-                    @endforeach
-                    </tbody>
                 </table>
             </div>
             <div class="menu-operation">
@@ -45,68 +31,68 @@
             <ul id="demo1"></ul>
         </div>
         <div class="menu-info">
-            <table class="layui-table">
-                <thead>
-                <tr>
-                    <th colspan="2" scope="col"><strong>节点信息</strong></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <th width="30%">服务器计算机名</th>
-                    <td>http://127.0.0.1/</td>
-                </tr>
-                <tr>
-                    <td>服务器IP地址</td>
-                    <td>192.168.1.1</td>
-                </tr>
-                <tr>
-                    <td>服务器域名</td>
-                    <td>www.erdangjiade.com</td>
-                </tr>
-                <tr>
-                    <td>服务器端口 </td>
-                    <td>80</td>
-                </tr>
-                <tr>
-                    <td>服务器IIS版本 </td>
-                    <td>Microsoft-IIS/6.0</td>
-                </tr>
-                <tr>
-                    <td>本文件所在文件夹 </td>
-                    <td>D:\WebSite\HanXiPuTai.com\XinYiCMS.Web\</td>
-                </tr>
-                <tr>
-                    <td>服务器操作系统 </td>
-                    <td>Microsoft Windows NT 5.2.3790 Service Pack 2</td>
-                </tr>
-                <tr>
-                    <td>系统所在文件夹 </td>
-                    <td>C:\WINDOWS\system32</td>
-                </tr>
-                <tr>
-                    <td>服务器脚本超时时间 </td>
-                    <td>30000秒</td>
-                </tr>
-                <tr>
-                    <td>服务器的语言种类 </td>
-                    <td>Chinese (People's Republic of China)</td>
-                </tr>
-                <tr>
-                    <td>.NET Framework 版本 </td>
-                    <td>2.050727.3655</td>
-                </tr>
-                <tr>
-                    <td>服务器当前时间 </td>
-                    <td>2017-01-01 12:06:23</td>
-                </tr>
-                <tr>
-                    <td>服务器IE版本 </td>
-                    <td>6.0000</td>
-                </tr>
+            {{--<table class="layui-table">--}}
+                {{--<thead>--}}
+                {{--<tr>--}}
+                    {{--<th colspan="2" scope="col"><strong>节点信息</strong></th>--}}
+                {{--</tr>--}}
+                {{--</thead>--}}
+                {{--<tbody>--}}
+                {{--<tr>--}}
+                    {{--<th width="30%">服务器计算机名</th>--}}
+                    {{--<td>http://127.0.0.1/</td>--}}
+                {{--</tr>--}}
+                {{--<tr>--}}
+                    {{--<td>服务器IP地址</td>--}}
+                    {{--<td>192.168.1.1</td>--}}
+                {{--</tr>--}}
+                {{--<tr>--}}
+                    {{--<td>服务器域名</td>--}}
+                    {{--<td>www.erdangjiade.com</td>--}}
+                {{--</tr>--}}
+                {{--<tr>--}}
+                    {{--<td>服务器端口 </td>--}}
+                    {{--<td>80</td>--}}
+                {{--</tr>--}}
+                {{--<tr>--}}
+                    {{--<td>服务器IIS版本 </td>--}}
+                    {{--<td>Microsoft-IIS/6.0</td>--}}
+                {{--</tr>--}}
+                {{--<tr>--}}
+                    {{--<td>本文件所在文件夹 </td>--}}
+                    {{--<td>D:\WebSite\HanXiPuTai.com\XinYiCMS.Web\</td>--}}
+                {{--</tr>--}}
+                {{--<tr>--}}
+                    {{--<td>服务器操作系统 </td>--}}
+                    {{--<td>Microsoft Windows NT 5.2.3790 Service Pack 2</td>--}}
+                {{--</tr>--}}
+                {{--<tr>--}}
+                    {{--<td>系统所在文件夹 </td>--}}
+                    {{--<td>C:\WINDOWS\system32</td>--}}
+                {{--</tr>--}}
+                {{--<tr>--}}
+                    {{--<td>服务器脚本超时时间 </td>--}}
+                    {{--<td>30000秒</td>--}}
+                {{--</tr>--}}
+                {{--<tr>--}}
+                    {{--<td>服务器的语言种类 </td>--}}
+                    {{--<td>Chinese (People's Republic of China)</td>--}}
+                {{--</tr>--}}
+                {{--<tr>--}}
+                    {{--<td>.NET Framework 版本 </td>--}}
+                    {{--<td>2.050727.3655</td>--}}
+                {{--</tr>--}}
+                {{--<tr>--}}
+                    {{--<td>服务器当前时间 </td>--}}
+                    {{--<td>2017-01-01 12:06:23</td>--}}
+                {{--</tr>--}}
+                {{--<tr>--}}
+                    {{--<td>服务器IE版本 </td>--}}
+                    {{--<td>6.0000</td>--}}
+                {{--</tr>--}}
 
-                </tbody>
-            </table>
+                {{--</tbody>--}}
+            {{--</table>--}}
         </div>
     </div>
 @endsection
@@ -120,10 +106,6 @@
     <script type="text/javascript">
         layui.use('table', function(){
             var table = layui.table;
-            table.init('demo', {
-                height: 315 //设置高度
-                //支持所有基础参数
-            });
 
             //监听工具条
             table.on('tool(demo)', function(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
@@ -279,10 +261,10 @@
                 return node;
             };
 
-            layui.tree({
-                elem: '#demo2' //指定元素
-                ,nodes: createTree()
-            });
+//            layui.tree({
+//                elem: '#demo2' //指定元素
+//                ,nodes: createTree()
+//            });
 
         });
 

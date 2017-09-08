@@ -28,3 +28,5 @@ Route::get('demo', function () {
 })->middleware('auth');
 
 Route::resource('menus', 'MenuController');
+
+Route::get('/table', 'MenuController@table');
