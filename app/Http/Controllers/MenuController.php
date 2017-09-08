@@ -2,28 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreatemenuRequest;
-use App\Http\Requests\UpdatemenuRequest;
-use App\Repositories\menuRepository;
+use App\Http\Requests\CreateMenuRequest;
+use App\Http\Requests\UpdateMenuRequest;
+use App\Repositories\MenuRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 
-class menuController extends AppBaseController
+class MenuController extends AppBaseController
 {
-    /** @var  menuRepository */
+    /** @var  MenuRepository */
     private $menuRepository;
 
-    public function __construct(menuRepository $menuRepo)
+    public function __construct(MenuRepository $menuRepo)
     {
         $this->menuRepository = $menuRepo;
         $this->middleware('auth');
     }
 
     /**
-     * Display a listing of the menu.
+     * Display a listing of the Menu.
      *
      * @param Request $request
      * @return Response
@@ -38,7 +38,7 @@ class menuController extends AppBaseController
     }
 
     /**
-     * Show the form for creating a new menu.
+     * Show the form for creating a new Menu.
      *
      * @return Response
      */
@@ -48,13 +48,13 @@ class menuController extends AppBaseController
     }
 
     /**
-     * Store a newly created menu in storage.
+     * Store a newly created Menu in storage.
      *
-     * @param CreatemenuRequest $request
+     * @param CreateMenuRequest $request
      *
      * @return Response
      */
-    public function store(CreatemenuRequest $request)
+    public function store(CreateMenuRequest $request)
     {
         $input = $request->all();
 
@@ -66,7 +66,7 @@ class menuController extends AppBaseController
     }
 
     /**
-     * Display the specified menu.
+     * Display the specified Menu.
      *
      * @param  int $id
      *
@@ -86,7 +86,7 @@ class menuController extends AppBaseController
     }
 
     /**
-     * Show the form for editing the specified menu.
+     * Show the form for editing the specified Menu.
      *
      * @param  int $id
      *
@@ -106,14 +106,14 @@ class menuController extends AppBaseController
     }
 
     /**
-     * Update the specified menu in storage.
+     * Update the specified Menu in storage.
      *
      * @param  int              $id
-     * @param UpdatemenuRequest $request
+     * @param UpdateMenuRequest $request
      *
      * @return Response
      */
-    public function update($id, UpdatemenuRequest $request)
+    public function update($id, UpdateMenuRequest $request)
     {
         $menu = $this->menuRepository->findWithoutFail($id);
 
@@ -131,7 +131,7 @@ class menuController extends AppBaseController
     }
 
     /**
-     * Remove the specified menu from storage.
+     * Remove the specified Menu from storage.
      *
      * @param  int $id
      *

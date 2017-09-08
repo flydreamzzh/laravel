@@ -2,19 +2,19 @@
 
 namespace App\Repositories;
 
-use App\Models\menu;
+use App\Models\Menu;
 use InfyOm\Generator\Common\BaseRepository;
 
 /**
- * Class menuRepository
+ * Class MenuRepository
  * @package App\Repositories
- * @version August 29, 2017, 4:12 pm UTC
+ * @version September 8, 2017, 3:49 am UTC
  *
- * @method menu findWithoutFail($id, $columns = ['*'])
- * @method menu find($id, $columns = ['*'])
- * @method menu first($columns = ['*'])
+ * @method Menu findWithoutFail($id, $columns = ['*'])
+ * @method Menu find($id, $columns = ['*'])
+ * @method Menu first($columns = ['*'])
 */
-class menuRepository extends BaseRepository
+class MenuRepository extends BaseRepository
 {
     /**
      * @var array
@@ -33,6 +33,6 @@ class menuRepository extends BaseRepository
      **/
     public function model()
     {
-        return menu::class;
+        return Menu::class;
     }
 }

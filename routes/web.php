@@ -27,4 +27,4 @@ Route::get('demo', function () {
     return view('demo.index');
 })->middleware('auth');
 
-Route::resource('menus', 'menuController');
+Route::resource('menus', 'MenuController');

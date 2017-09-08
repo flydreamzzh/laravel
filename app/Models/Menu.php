@@ -5,10 +5,12 @@ namespace App\Models;
 use Eloquent as Model;
 
 /**
- * Class menu
+ * Class Menu
  * @package App\Models
- * @version August 29, 2017, 4:12 pm UTC
+ * @version September 8, 2017, 3:49 am UTC
  *
+ * @method static Menu find($id=null, $columns = array())
+ * @method static Menu|\Illuminate\Database\Eloquent\Collection findOrFail($id, $columns = ['*'])
  * @property string name
  * @property string description
  * @property string url
@@ -16,7 +18,7 @@ use Eloquent as Model;
  * @property integer lft
  * @property integer rgt
  */
-class menu extends Model
+class Menu extends Model
 {
 
     public $table = 'menu';

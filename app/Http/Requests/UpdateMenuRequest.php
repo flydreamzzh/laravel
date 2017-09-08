@@ -3,9 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\menu;
+use App\Models\Menu;
 
-class UpdatemenuRequest extends FormRequest
+class UpdateMenuRequest extends FormRequest
 {
 
     /**
@@ -25,6 +25,6 @@ class UpdatemenuRequest extends FormRequest
      */
     public function rules()
     {
-        return menu::$rules;
+        return Menu::$rules;
     }
 }
