@@ -37,11 +37,13 @@ class MenuController extends AppBaseController
             ->with('menus', $menus);
     }
 
-    public function table()
+    public function table(Request $request)
     {
-        $menus = $this->menuRepository->all();
+        $this->menuRepository->pushCriteria(new RequestCriteria($request));
 
-        return json_encode(['data' => $menus, 'count' => 100, 'code' => 0], true);
+        $menus = $this->menuRepository->paginate($request->get('limit'))->toArray();
+
+        return json_encode(array_merge($menus, [ 'count' => $menus['total'], 'code' => 0]), true);
     }
 
     /**

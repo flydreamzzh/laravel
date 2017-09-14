@@ -22,11 +22,9 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-
-Route::get('demo', function () {
-    return view('demo.index');
-})->middleware('auth');
+/**
+ * -------------- MENU -----------------
+ */
+Route::get('/menus/table', 'MenuController@table')->name('menus.table');
 
 Route::resource('menus', 'MenuController');
-
-Route::get('/table', 'MenuController@table');

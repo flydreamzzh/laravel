@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Eloquent as Model;
+use App\Models\base\Model;
 
 /**
  * Class Menu
@@ -61,5 +61,15 @@ class Menu extends Model
         
     ];
 
-    
+    /**
+     * 返回路由的名称
+     * Example：Route::resource('menus', 'MenuController'); 中的menus
+     * return ['menus'];
+     * @return string
+     */
+    public function route()
+    {
+        // TODO: Implement route() method.
+        return 'menus';
+    }
 }
