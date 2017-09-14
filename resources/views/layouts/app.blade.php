@@ -13,6 +13,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('layui/css/layui.css') }}"  media="all">
+    <script type="text/javascript" src="{{ asset('layui/layui.js') }}"></script>
 
 </head>
 <body>
