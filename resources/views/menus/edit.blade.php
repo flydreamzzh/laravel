@@ -1,20 +1,25 @@
+@include('adminlte-templates::common.errors')
 
-    <section class="content-header">
-        <h1>
-            Menu
-        </h1>
-   </section>
-   <div class="content">
-       @include('adminlte-templates::common.errors')
-       <div class="box box-primary">
-           <div class="box-body">
-               <div class="row">
-                   {!! Form::model($menu, ['route' => ['menus.update', $menu->id], 'method' => 'patch']) !!}
+{!! Form::model($menu, ['route' => ['menus.update', $menu->id], 'method' => 'patch', 'class' => 'layui-form', 'style' => 'padding: 10px 30px 10px 10px']) !!}
 
-                        @include('menus.fields')
+@include('menus.fields')
 
-                   {!! Form::close() !!}
-               </div>
-           </div>
-       </div>
-   </div>
+{!! Form::close() !!}
+
+<script type="text/javascript">
+    layui.use(['form'], function() {
+        var form = layui.form;
+        form.render();
+        form.on('submit(submit)', function(data){
+            $.post(data.form.action, data.field, function (response) {
+                if (response[0]) {
+                    layer.closeAll();
+                    layer.msg(response[1], {icon: 1});
+                } else {
+                    layer.msg(response[1], {icon: 2});
+                }
+            })
+            return false;
+        });
+    })
+</script>

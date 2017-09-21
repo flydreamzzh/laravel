@@ -58,7 +58,8 @@ class Menu extends Model
      * @var array
      */
     public static $rules = [
-        
+        'name' => 'required|max:255',
+        'url' => 'required',
     ];
 
     /**

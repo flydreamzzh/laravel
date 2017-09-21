@@ -26,14 +26,15 @@
                 var data = obj.data //获得当前行数据
                     , layEvent = obj.event; //获得 lay-event 对应的值
                 if (layEvent === 'detail') {
-                    layer.open({
-                        type: 2,
-                        area: ['700px', '450px'],
-                        fixed: false, //不固定
-                        maxmin: true,
-                        content: [data.show_url, 'no']
-                    });
-                    console.log(obj);
+                    $.get(data.show_url, function (response) {
+                        layer.open({
+                            title: data.name,
+                            area: ['700px', '400px'],
+                            maxmin: true,
+                            type: 1,
+                            content: response
+                        });
+                    })
                 } else if (layEvent === 'del') {
                     layer.confirm('真的删除行么', function (index) {
                         obj.del(); //删除对应行（tr）的DOM结构
@@ -41,14 +42,23 @@
                         //向服务端发送删除指令
                     });
                 } else if (layEvent === 'edit') {
-                    layer.open({
-                        type: 2,
-                        area: ['700px', '450px'],
-                        fixed: false, //不固定
-                        maxmin: true,
-                        content: data.edit_url
+                    $.get(data.edit_url, function (response) {
+//                        layer.full(layer.open({
+//                            title: data.name,
+//                            area: ['700px', '450px'],
+//                            maxmin: true,
+//                            type: 1,
+//                            content: response
+//                        }));
+                        layer.open({
+                            type: 1,
+                            id: 'update',
+                            title: data.name,
+                            area: ['800px', 'auto'],
+                            maxmin: true,
+                            content: response
+                        });
                     })
-
                 }
             });
         });

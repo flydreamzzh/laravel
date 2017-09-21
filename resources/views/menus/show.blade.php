@@ -1,15 +1,36 @@
-<section class="content-header">
-    <h1>
-        Menu
-    </h1>
-</section>
-<div class="content">
-    <div class="box box-primary">
-        <div class="box-body">
-            <div class="row" style="padding-left: 20px">
-                @include('menus.show_fields')
-                <a href="{!! route('menus.index') !!}" class="btn btn-default">Back</a>
-            </div>
-        </div>
-    </div>
-</div>
+<table class="layui-table">
+    <tbody>
+    <tr>
+        <th width="20%">名称</th>
+        <td>{!! $menu->name !!}</td>
+    </tr>
+    <tr>
+        <th>描述</th>
+        <td>{!! $menu->description !!}</td>
+    </tr>
+    <tr>
+        <td>路由</td>
+        <td>{!! $menu->url !!}</td>
+    </tr>
+    <tr>
+        <td>图标</td>
+        <td>{!! $menu->icon !!}</td>
+    </tr>
+    <tr>
+        <td>左值</td>
+        <td>{!! $menu->lft !!}</td>
+    </tr>
+    <tr>
+        <td>右值</td>
+        <td>{!! $menu->rgt !!}</td>
+    </tr>
+    <tr>
+        <td>创建时间</td>
+        <td>{!! $menu->created_at !!}</td>
+    </tr>
+    <tr>
+        <td>更新时间</td>
+        <td>{!! $menu->updated_at !!}</td>
+    </tr>
+    </tbody>
+</table>

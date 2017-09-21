@@ -1,41 +1,55 @@
 <!-- Name Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('name', 'Name:') !!}
-    {!! Form::text('name', null, ['class' => 'form-control']) !!}
+<div class="layui-form-item">
+    {{ Form::label('name', '名称', ['class' => 'layui-form-label']) }}
+    <div class="layui-input-block">
+        {{ Form::text('name', null, ['required', 'lay-verify' => 'required', 'placeholder' => '请输入节点名称', 'class' => 'layui-input']) }}
+    </div>
 </div>
 
 <!-- Description Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('description', 'Description:') !!}
-    {!! Form::text('description', null, ['class' => 'form-control']) !!}
+<div class="layui-form-item">
+    {{ Form::label('description', '描述', ['class' => 'layui-form-label']) }}
+    <div class="layui-input-block">
+        {{ Form::textarea('description', null, ['rows' => 6, 'placeholder' => '请简单描述节点内容', 'class' => 'layui-textarea']) }}
+    </div>
 </div>
 
 <!-- Url Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('url', 'Url:') !!}
-    {!! Form::text('url', null, ['class' => 'form-control']) !!}
+<div class="layui-form-item">
+    {{ Form::label('url', '路由', ['class' => 'layui-form-label']) }}
+    <div class="layui-input-block">
+        {{ Form::text('url', null, ['required', 'lay-verify' => 'required', 'placeholder' => '请输入节点路由', 'class' => 'layui-input']) }}
+    </div>
 </div>
 
 <!-- Icon Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('icon', 'Icon:') !!}
-    {!! Form::text('icon', null, ['class' => 'form-control']) !!}
+<div class="layui-form-item">
+    {{ Form::label('icon', '图标', ['class' => 'layui-form-label']) }}
+    <div class="layui-input-block">
+        {{ Form::text('icon', null, ['class' => 'layui-input']) }}
+    </div>
 </div>
 
-<!-- Lft Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('lft', 'Lft:') !!}
-    {!! Form::number('lft', null, ['class' => 'form-control']) !!}
-</div>
+{{--<!-- Lft Field -->--}}
+{{--<div class="layui-form-item">--}}
+    {{--{{ Form::label('lft', '左值', ['class' => 'layui-form-label']) }}--}}
+    {{--<div class="layui-input-block">--}}
+        {{--{{ Form::number('lft', null, ['class' => 'layui-input']) }}--}}
+    {{--</div>--}}
+{{--</div>--}}
 
-<!-- Rgt Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('rgt', 'Rgt:') !!}
-    {!! Form::number('rgt', null, ['class' => 'form-control']) !!}
-</div>
+{{--<!-- Rgt Field -->--}}
+{{--<div class="layui-form-item">--}}
+    {{--{{ Form::label('rgt', '右值', ['class' => 'layui-form-label']) }}--}}
+    {{--<div class="layui-input-block">--}}
+        {{--{{ Form::number('rgt', null, ['class' => 'layui-input']) }}--}}
+    {{--</div>--}}
+{{--</div>--}}
 
-<!-- Submit Field -->
-<div class="form-group col-sm-12">
-    {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
-    <a href="{!! route('menus.index') !!}" class="btn btn-default">Cancel</a>
+{{--<!-- Submit Field -->--}}
+<div class="layui-form-item">
+    <div class="layui-input-block">
+        {{ Form::submit('立即提交', ['lay-submit', 'lay-filter' => 'submit', 'class' => 'layui-btn']) }}
+        {{ Form::reset('重置', ['class' => 'layui-btn layui-btn-primary']) }}
+    </div>
 </div>

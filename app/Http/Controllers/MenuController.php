@@ -127,16 +127,12 @@ class MenuController extends AppBaseController
         $menu = $this->menuRepository->findWithoutFail($id);
 
         if (empty($menu)) {
-            Flash::error('Menu not found');
-
-            return redirect(route('menus.index'));
+            return response()->json([false, '节点不存在！']);
         }
 
         $menu = $this->menuRepository->update($request->all(), $id);
 
-        Flash::success('Menu updated successfully.');
-
-        return redirect(route('menus.index'));
+        return response()->json([true, '节点更新成功！']);
     }
 
     /**
