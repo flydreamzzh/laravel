@@ -1,26 +1,32 @@
-<table class="layui-table" style="height: 800px"
-       lay-data="{height: '380', limits:[15,30,50,100], limit: 15, page:true, id:'idTest', url:'{{ route("menus.table") }}'}"
-       lay-filter="menusTable">
-    <thead>
-    <tr>
-        <th lay-data="{field:'name', width:150, fixed: true}">名称</th>
-        <th lay-data="{field:'description', width:200, sort: true}">描述</th>
-        <th lay-data="{field:'url', width:100, sort: true}">路由</th>
-        <th lay-data="{field:'lft', width:80, sort: true}">左值</th>
-        <th lay-data="{field:'rgt', width:80, sort: true}">右值</th>
-        <th lay-data="{fixed: 'right', width:160, align:'center', toolbar: '#barDemo'}"></th>
-    </tr>
-    </thead>
-</table>
-<div type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-primary layui-btn-mini" lay-event="detail">查看</a>
-    <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
-</div>
+<!-- 节点表格 -->
+<table class="layui-hide" id="MenuTable" lay-filter="menusTable"></table>
 @section('table_js')
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-primary layui-btn-mini" lay-event="detail">查看</a>
+        <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
+    </script>
     <script type="text/javascript">
         layui.use('table', function () {
             var table = layui.table;
+            table.render({
+                elem: '#MenuTable',
+                url: '{{ route("menus.table") }}',
+                cols: [[
+                    {checkbox: true, fixed: true},
+                    {field: 'name', title: '名称', width: 150, fixed: true},
+                    {field: 'description', title: '描述', width: 200, sort: true},
+                    {field: 'url', title: '路由', width: 100},
+                    {field: 'lft', title: '左值', sort: true, width: 80},
+                    {field: 'rgt', title: '右值', sort: true, width: 80},
+                    {fixed: 'right', width: 160, align: 'center', toolbar: '#barDemo'}
+                ]],
+                id: 'idTest',
+                limits:[15,30,50,100],
+                page: true,
+                height: 380
+            });
+
             //监听工具条
             table.on('tool(menusTable)', function (obj) { //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
                 var data = obj.data //获得当前行数据
@@ -43,13 +49,6 @@
                     });
                 } else if (layEvent === 'edit') {
                     $.get(data.edit_url, function (response) {
-//                        layer.full(layer.open({
-//                            title: data.name,
-//                            area: ['700px', '450px'],
-//                            maxmin: true,
-//                            type: 1,
-//                            content: response
-//                        }));
                         layer.open({
                             type: 1,
                             id: 'update',
