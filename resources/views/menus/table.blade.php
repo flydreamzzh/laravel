@@ -15,13 +15,12 @@
                 cols: [[
                     {checkbox: true, fixed: true},
                     {field: 'name', title: '名称', width: 150, fixed: true},
-                    {field: 'description', title: '描述', width: 200, sort: true},
-                    {field: 'url', title: '路由', width: 100},
-                    {field: 'lft', title: '左值', sort: true, width: 80},
-                    {field: 'rgt', title: '右值', sort: true, width: 80},
+                    {field: 'url', title: '路由', width: 200},
+                    {field: 'description', title: '描述', width: 300, sort: true},
                     {fixed: 'right', width: 160, align: 'center', toolbar: '#barDemo'}
                 ]],
-                id: 'idTest',
+                id: 'menus',
+                limit: 15,
                 limits:[15,30,50,100],
                 page: true,
                 height: 380

@@ -7,12 +7,13 @@
 {!! Form::close() !!}
 
 <script type="text/javascript">
-    layui.use(['form'], function() {
-        var form = layui.form;
+    layui.use(['form', 'table'], function() {
+        var form = layui.form, table = layui.table;
         form.render();
         form.on('submit(submit)', function(data){
             $.post(data.form.action, data.field, function (response) {
                 if (response[0]) {
+                    table.reload('menus')
                     layer.closeAll();
                     layer.msg(response[1], {icon: 1});
                 } else {
