@@ -12,12 +12,12 @@
         form.render();
         form.on('submit(submit)', function(data){
             $.post(data.form.action, data.field, function (response) {
-                if (response[0]) {
-                    table.reload('menus')
+                if (response.success) {
+                    window.menuObj.update(response.data);
                     layer.closeAll();
-                    layer.msg(response[1], {icon: 1});
+                    layer.msg(response.message, {icon: 1});
                 } else {
-                    layer.msg(response[1], {icon: 2});
+                    layer.msg(response.message, {icon: 2});
                 }
             })
             return false;

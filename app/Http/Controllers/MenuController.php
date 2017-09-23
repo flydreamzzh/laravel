@@ -132,7 +132,7 @@ class MenuController extends AppBaseController
 
         $menu = $this->menuRepository->update($request->all(), $id);
 
-        return response()->json([true, '节点更新成功！']);
+        return $this->sendResponse($menu->toArray(), '节点更新成功！');
     }
 
     /**

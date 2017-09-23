@@ -33,10 +33,10 @@
                 if (layEvent === 'detail') {
                     $.get(data.show_url, function (response) {
                         layer.open({
-                            title: data.name,
-                            area: ['700px', '400px'],
-                            maxmin: true,
                             type: 1,
+                            title: data.name,
+                            area: ['700px', 'auto'],
+                            maxmin: true,
                             content: response
                         });
                     })
@@ -48,6 +48,7 @@
                     });
                 } else if (layEvent === 'edit') {
                     $.get(data.edit_url, function (response) {
+                        window.menuObj = obj;
                         layer.open({
                             type: 1,
                             id: 'update',
