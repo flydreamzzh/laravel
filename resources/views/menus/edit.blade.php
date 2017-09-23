@@ -19,7 +19,17 @@
                 } else {
                     layer.msg(response.message, {icon: 2});
                 }
-            })
+            }).fail(function (data) {
+                var message = '';
+                $.each(data.responseJSON, function (key, value) {
+                    if (value instanceof Array) {
+                        message += value.join('<br>') + "<br>";
+                    } else {
+                        message += value + "<br>";
+                    }
+                });
+                layer.msg(message, {icon: 5});
+            });
             return false;
         });
     })
