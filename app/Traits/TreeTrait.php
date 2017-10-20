@@ -16,6 +16,7 @@ use Exception;
  *      }
  *      public function preCondition()
  *      {
+ *           //这个只用来区分多套树， 谨记！！！！！！！！！！！！！！！！！！！！！！！！！！！！
  *           return function ($query){};
  *      }
  * }
@@ -24,6 +25,9 @@ use Exception;
  *  $obj->tree()->.....
  * 
  * 重要提示：重要提示：重要提示：重要提示：重要提示：重要提示：重要提示：重要提示：重要提示：重要提示：重要提示：重要提示：
+ *
+ *      对表进行操作时，建议不要使用tree_where进行筛选，否则可能对表对左右值有影响， 谨记！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+ *
  *      建议表中使用一套树，即不存在相同的左右值
  *      若要使用多套树，那么请谨慎使用过滤条件，并需要修改tree_getMinLeftAndMaxRight方法，取注释的内容
  * @author Administrator
