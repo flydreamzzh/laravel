@@ -169,10 +169,10 @@ trait TreeTrait
      */
     public function tree_getMinLeftAndMaxRight()
     {
-//        $left = DB::table($this->table)->addBinding($this->preQuery->getBindings())->min($this->left);
-//        $right = DB::table($this->table)->addBinding($this->preQuery->getBindings())->max($this->right);
-        $left = DB::table($this->table)->min($this->left);
-        $right = DB::table($this->table)->max($this->right);
+        $left = DB::table($this->table)->addBinding($this->preQuery->getBindings())->min($this->left);
+        $right = DB::table($this->table)->addBinding($this->preQuery->getBindings())->max($this->right);
+//        $left = DB::table($this->table)->min($this->left);
+//        $right = DB::table($this->table)->max($this->right);
         if(is_numeric($left) && is_numeric($right)) {
             return [(int)$left, (int)$right];
         } else {
@@ -260,13 +260,11 @@ trait TreeTrait
     public function tree_remove($model = NULL)
     {
         $lr = $this->tree_getLeftAndRight($model);
-        $models = $this->find()
-            ->where(['>=', $this->left, min($lr)])
-            ->andWhere(['<=', $this->right, max($lr)])
-            ->andWhere($this->preCondition)
-            ->asArray()
-            ->all();
-        $len = $this->deleteAll([$this->primaryKey()[0] => $models]);
+        $len = DB::table($this->table)
+            ->where($this->left, '>=', min($lr))
+            ->where($this->right, '<=', max($lr))
+            ->addBinding($this->preQuery->getBindings())
+            ->delete();
         return $len;
     }
 
@@ -278,13 +276,11 @@ trait TreeTrait
     public function tree_removeChildren($model = NULL)
     {
         $lr = $this->tree_getLeftAndRight($model);
-        $models = $this->find()
-            ->where(['>', $this->left, min($lr)])
-            ->andWhere(['<', $this->right, max($lr)])
-            ->andWhere($this->preCondition)
-            ->asArray()
-            ->all();
-        $len = $this->deleteAll([$this->primaryKey()[0] => $models]);
+        $len = DB::table($this->table)
+            ->where($this->left, '>', min($lr))
+            ->where($this->right, '<', max($lr))
+            ->addBinding($this->preQuery->getBindings())
+            ->delete();
         return $len;
     }
 
@@ -304,28 +300,33 @@ trait TreeTrait
             $dif = max($lr) - min($lr) + 1; //当前对象的 右值 - 左值
             $pdif = min($lr) - max($plr); //当前对象的 左值 - 准父类的 右值
             /** @var array $models 要移动更新的行主键 */
-            $models = $this->find()->select(['id'=>$this->primaryKey()[0]])
-                ->where(['>=', $this->left, min($lr)])
-                ->andWhere(['<=', $this->right, max($lr)])
-                ->andWhere($this->preCondition)
-                ->asArray()->all();
-            $ids = ((new ArrayHelper())->getColumn($models,'id'));
-            /** @var array $leftmodels 要更新左值的行主键（未去除要移动的行主键）*/
-            $leftmodels = $this->find()->select(['id'=>$this->primaryKey()[0]])
-                ->where(['>', $this->left, max($plr)])
-                ->andWhere($this->preCondition)
-                ->asArray()->all();
-            $leftIds = ((new ArrayHelper())->getColumn($leftmodels,'id'));
-            /** @var array $rightmodels 要更新右值的行主键（未去除要移动的行主键）*/
-            $rightmodels = $this->find()->select(['id'=>$this->primaryKey()[0]])
-                ->where(['>=', $this->right, max($plr)])
-                ->andWhere($this->preCondition)
-                ->asArray()->all();
-            $rightIds = ((new ArrayHelper())->getColumn($rightmodels,'id'));
+            $models = DB::table($this->table)->select(['id'=>$this->primaryKey])
+                ->where($this->left, '>=', min($lr))
+                ->where($this->right, '<=', max($lr))
+                ->addBinding($this->preQuery->getBindings())
+                ->get();
+            $ids = array_pluck($models, 'id');
 
-            $updatelefts = $this->updateAllCounters([$this->left => ($this->left + $dif)], [$this->primaryKey()[0] => array_diff($leftIds, $ids)]);
-            $updaterights = $this->updateAllCounters([$this->right => ($this->right + $dif)], [$this->primaryKey()[0] => array_diff($rightIds, $ids)]);
-            $updatemodels = $this->updateAllCounters([$this->left => ($this->left - $pdif), $this->right => ($this->right - $pdif)], [$this->primaryKey()[0] => $ids]);
+            /** @var array $leftmodels 要更新左值的行主键（未去除要移动的行主键）*/
+            $leftmodels = DB::table($this->table)->select(['id'=>$this->primaryKey])
+                ->where($this->left, '>', max($plr))
+                ->addBinding($this->preQuery->getBindings())
+                ->get();
+            $leftIds = array_pluck($leftmodels, 'id');
+
+            /** @var array $rightmodels 要更新右值的行主键（未去除要移动的行主键）*/
+            $rightmodels = DB::table($this->table)->select(['id'=>$this->primaryKey])
+                ->where($this->right, '>=', max($plr))
+                ->addBinding($this->preQuery->getBindings())
+                ->get();
+            $rightIds = array_pluck($rightmodels, 'id');
+
+            $updatelefts = DB::table($this->table)->whereIn($this->primaryKey, array_diff($leftIds, $ids))->increment($this->left, $dif);
+            $updaterights = DB::table($this->table)->whereIn($this->primaryKey, array_diff($rightIds, $ids))->increment($this->right, $dif);
+            $updatemodels =DB::table($this->table)->whereIn($this->primaryKey, $ids)->update([
+                $this->left => DB::raw("$this->left - $pdif"),
+                $this->right => DB::raw("$this->right - $pdif"),
+            ]);
             if($updatelefts == count(array_diff($leftIds, $ids)) && $updaterights == count(array_diff($rightIds, $ids)) && $updatemodels == count($ids)) {
                 DB::commit();
                 return true;
@@ -350,7 +351,8 @@ trait TreeTrait
         $brother = $this->tree_brother($model);
         $replace = null;
         foreach ($brother as $node) {
-            $blr = $node->tree_getLeftAndRight();
+            /**  @var $node $this */
+            $blr = $node->tree()->tree_getLeftAndRight();
             if (min($lr) <= min($blr))
                 break;
             /** @var Eloquent $replace */
@@ -369,7 +371,8 @@ trait TreeTrait
         $brother = $this->tree_brother($model);
         $replace = null;
         foreach ($brother as $node) {
-            $blr = $node->tree_getLeftAndRight();
+            /**  @var $node $this */
+            $blr = $node->tree()->tree_getLeftAndRight();
             if (min($lr) < min($blr)) {
                 /** @var Eloquent $replace */
                 $replace = $node;
@@ -390,24 +393,24 @@ trait TreeTrait
         $lr = $this->tree_getLeftAndRight($model);
         if ($exchangeModel) {
             /** @var Eloquent $modelCur */
-            $modelCur = $model ? $model : $this;
-            $tran = Yii::$app->db->beginTransaction();
+            $modelCur = $model ? $model->tree() : $this;
+            DB::beginTransaction();
             try {
-                $rlr = $exchangeModel->tree_getLeftAndRight();
+                $rlr = $exchangeModel->tree()->tree_getLeftAndRight();
                 $modelCur->{$this->left} = min($rlr);
                 $modelCur->{$this->right} = max($rlr);
                 if($modelCur->update()) {
                     $exchangeModel->{$this->left} = min($lr);
                     $exchangeModel->{$this->right} = max($lr);
                     if ($exchangeModel->update()) {
-                        $tran->commit();
+                        DB::commit();
                         return true;
                     }
                 }
-                $tran->rollBack();
+                DB::rollBack();
                 return false;
             } catch (Exception $e) {
-                $tran->rollBack();
+                DB::rollBack();
                 return false;
             }
         }
@@ -423,15 +426,19 @@ trait TreeTrait
         $lr = $this->tree_getMinLeftAndMaxRight();
         if ($lr == null)
             return [];
-        $models = $this->find()
-            ->where(['>', $this->left, min($lr)-1])
-            ->andWhere(['<', $this->right, max($lr)+1])
-            ->andWhere($this->preCondition)
-            ->orderBy([$this->left => SORT_ASC])
-            ->all();
+
+        $models = $this
+            ->where($this->left, '>', min($lr)-1)
+            ->where($this->right, '<', max($lr)+1)
+            ->addBinding($this->preQuery->getBindings())
+            ->addBinding($this->query->getBindings())
+            ->orderBy($this->left)
+            ->get();
+
         $directlyChildren = [];
         foreach ($models as $node) {
-            if (! $node->tree_directlyParent()) {
+            /**  @var $node $this */
+            if (! $node->tree()->tree_directlyParent()) {
                 $directlyChildren[] = $node;
             }
         }
@@ -446,12 +453,13 @@ trait TreeTrait
     public function tree_directlyParent($model = NULL)
     {
         $lr = $this->tree_getLeftAndRight($model);
-        $parent = $this->find()
-            ->where(['<', $this->left, min($lr)])
-            ->andWhere(['>', $this->right, max($lr)])
-            ->andWhere($this->preCondition)
-            ->orderBy([$this->left => SORT_DESC])
-            ->one();
+
+        $parent = $this
+            ->where($this->left, '<', min($lr))
+            ->where($this->right, '>', max($lr))
+            ->addBinding($this->preQuery->getBindings())
+            ->orderBy($this->left, 'desc')
+            ->first();
         return $parent ? $parent : null;
     }
 
@@ -465,9 +473,10 @@ trait TreeTrait
         $lr = $this->tree_getLeftAndRight($model);
         $parentModel = $this->tree_directlyParent($model);
         if (! $parentModel) {
-            $models = $this->tree_TopNodes($model);
+            $models = $this->tree_TopNodes();
         } else {
-            $models = $parentModel->tree_directlyChildren();
+            /**  @var $parentModel $this */
+            $models = $parentModel->tree()->tree_directlyChildren();
         }
         foreach ($models as $key => $node) {
             $blr = $this->tree_getLeftAndRight($node);
@@ -488,14 +497,16 @@ trait TreeTrait
     {
         $directlyChildren = [];
         $lr = $this->tree_getLeftAndRight($model);
-        $models = $this->find()
-            ->where(['>', $this->left, min($lr)])
-            ->andWhere(['<', $this->right, max($lr)])
-            ->andWhere($this->preCondition)
-            ->orderBy([$this->left => SORT_ASC])
-            ->all();
+        $models = $this
+            ->where($this->left, '>', min($lr))
+            ->where($this->right, '<', max($lr))
+            ->addBinding($this->preQuery->getBindings())
+            ->addBinding($this->query->getBindings())
+            ->orderBy($this->left)
+            ->get();
         foreach ($models as $node) {
-            if ($node->tree_isDirectlyParent($this)) {
+            /**  @var $node $this */
+            if ($node->tree()->tree_isDirectlyParent($this)) {
                 $directlyChildren[] = $node;
             }
         }
@@ -510,14 +521,15 @@ trait TreeTrait
      */
     public function tree_children($model = NULL)
     {
-        $model = $model ? $model : $this;
+        $model = $model ? $model->tree() : $this;
         $child = $model->tree_directlyChildren();
         if ($child) {
             $model->tree_children = $child;
         }
         foreach ($child as $node) {
-            if (! $node->tree_isLastNode()) {
-                $node->tree_children();
+            /**  @var $node $this */
+            if (! $node->tree()->tree_isLastNode()) {
+                $node->tree()->tree_children();
             }
         }
         return $model;
@@ -531,7 +543,8 @@ trait TreeTrait
     {
         $topNodes = $this->tree_TopNodes();
         foreach ($topNodes as $node) {
-            $node->tree_children();
+            /**  @var $node $this */
+            $node->tree()->tree_children();
         }
         return $topNodes;
     }
@@ -576,8 +589,8 @@ trait TreeTrait
     {
         $pModel = $this->tree_directlyParent($model);
         if ($pModel) {
-            $id = $pModel->{$this->primaryKey()[0]};
-            $pid = $parentModel->{$this->primaryKey()[0]};
+            $id = $pModel->{$this->primaryKey};
+            $pid = $parentModel->{$this->primaryKey};
             return $id == $pid;
         }
         return false;
@@ -612,6 +625,7 @@ trait TreeTrait
             ->where($this->left,'>', min($lr))
             ->where($this->right,'<', max($lr))
             ->addBinding($this->preQuery->getBindings())
+            ->addBinding($this->query->getBindings())
             ->count();
         return $len;
     }
@@ -631,16 +645,16 @@ trait TreeTrait
      * @param Eloquent[] $model
      * @return array
      */
-    public function tree_array($models)
+    public static function tree_array($models)
     {
         if (! $models)
             return $models;
         if (is_array($models)) {
             foreach ($models as $key => $model) {
-                $models[$key] = $this->tree_array($model);
+                $models[$key] = self::tree_array($model);
             }
         } else {
-            $children = $models->tree_children ? $this->tree_array($models->tree_children) : [];
+            $children = $models->tree_children ? self::tree_array($models->tree_children) : [];
             $models = $models->toArray();
             if($children)
                 $models['tree_children'] = $children;
