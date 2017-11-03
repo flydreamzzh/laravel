@@ -9,7 +9,6 @@ use Exception;
 /**
  * 建立带左右值的无限归类树
  * class company{
- *      use TreeTrait;
  *      public function setLeftAndRightColumn()
  *      {
  *          return ["lft", "rgt"];
@@ -22,8 +21,8 @@ use Exception;
  * }
  *
  * use Example:
- *  $obj->tree()->.....
- * 
+ *  $obj->.....
+ *
  * 重要提示：重要提示：重要提示：重要提示：重要提示：重要提示：重要提示：重要提示：重要提示：重要提示：重要提示：重要提示：
  *
  *      对表进行操作时，建议不要使用tree_where进行筛选，否则可能对表对左右值有影响， 谨记！！！！！！！！！！！！！！！！！！！！！！！！！！！！
@@ -31,10 +30,29 @@ use Exception;
  *      建议表中使用一套树，即不存在相同的左右值
  *      若要使用多套树，那么请谨慎使用过滤条件，并需要修改tree_getMinLeftAndMaxRight方法，取注释的内容
  * @author Administrator
- *        
+ *
  */
-trait TreeTrait
+abstract class TreeModel extends Eloquent
 {
+    /**
+     * 初始化类数据库字段信息
+     * @throws Exception
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->query = $this->newQuery();
+        $this->preQuery = $this->newQuery();
+        $lr = $this->setLeftAndRightColumn();
+        $this->dealPreCondition();
+        if (is_array($lr) && count($lr) == 2) {
+            $this->left = min($lr);
+            $this->right = max($lr);
+        } else {
+            throw new Exception("无限分类树左右值字段名称配置失败");
+        }
+    }
+
     /**
      * 查询条件
      * @var \Illuminate\Database\Query\Builder $query
@@ -49,14 +67,14 @@ trait TreeTrait
 
     /**
      * 左值字段名
-     * 
+     *
      * @var string
      */
     private $left;
 
     /**
      * 右值字段名
-     * 
+     *
      * @var string
      */
     private $right;
@@ -67,38 +85,18 @@ trait TreeTrait
      * @var string
      */
     private $preCondition = '';
-    
+
     /**
      * 默认数据表最小左值
-     * @var number 
+     * @var number
      */
     private $minLeft = 0;
-    
+
     /**
      * 节点子类对象树
      * @var array
      */
     public $tree_children;
-
-    /**
-     * 初始化类数据库字段信息
-     * @throws Exception
-     * @return $this
-     */
-    public function tree()
-    {
-        $this->query = $this->newQuery();
-        $this->preQuery = $this->newQuery();
-        $lr = $this->setLeftAndRightColumn();
-        $this->dealPreCondition();
-        if (is_array($lr) && count($lr) == 2) {
-            $this->left = min($lr);
-            $this->right = max($lr);
-        } else {
-            throw new Exception("无限分类树左右值字段名称配置失败");
-        }
-        return $this;
-    }
 
     /**
      * example：
@@ -124,6 +122,8 @@ trait TreeTrait
     }
 
     /**
+     * @param Closure $closure
+     * @param $query
      * @return $this
      */
     public function tree_where(Closure $closure, $query)
@@ -355,7 +355,7 @@ trait TreeTrait
         $replace = null;
         foreach ($brother as $node) {
             /**  @var $node $this */
-            $blr = $node->tree()->tree_getLeftAndRight();
+            $blr = $node->tree_getLeftAndRight();
             if (min($lr) <= min($blr))
                 break;
             /** @var Eloquent $replace */
@@ -375,7 +375,7 @@ trait TreeTrait
         $replace = null;
         foreach ($brother as $node) {
             /**  @var $node $this */
-            $blr = $node->tree()->tree_getLeftAndRight();
+            $blr = $node->tree_getLeftAndRight();
             if (min($lr) < min($blr)) {
                 /** @var Eloquent $replace */
                 $replace = $node;
@@ -396,10 +396,11 @@ trait TreeTrait
         $lr = $this->tree_getLeftAndRight($model);
         if ($exchangeModel) {
             /** @var Eloquent $modelCur */
-            $modelCur = $model ? $model->tree() : $this;
+            $modelCur = $model ? $model : $this;
             DB::beginTransaction();
             try {
-                $rlr = $exchangeModel->tree()->tree_getLeftAndRight();
+                /** @var $exchangeModel $this */
+                $rlr = $exchangeModel->tree_getLeftAndRight();
                 $modelCur->{$this->left} = min($rlr);
                 $modelCur->{$this->right} = max($rlr);
                 if($modelCur->update()) {
@@ -441,7 +442,7 @@ trait TreeTrait
         $directlyChildren = [];
         foreach ($models as $node) {
             /**  @var $node $this */
-            if (! $node->tree()->tree_directlyParent()) {
+            if (! $node->tree_directlyParent()) {
                 $directlyChildren[] = $node;
             }
         }
@@ -479,7 +480,7 @@ trait TreeTrait
             $models = $this->tree_TopNodes();
         } else {
             /**  @var $parentModel $this */
-            $models = $parentModel->tree()->tree_directlyChildren();
+            $models = $parentModel->tree_directlyChildren();
         }
         foreach ($models as $key => $node) {
             $blr = $this->tree_getLeftAndRight($node);
@@ -509,7 +510,7 @@ trait TreeTrait
             ->get();
         foreach ($models as $node) {
             /**  @var $node $this */
-            if ($node->tree()->tree_isDirectlyParent($this)) {
+            if ($node->tree_isDirectlyParent($this)) {
                 $directlyChildren[] = $node;
             }
         }
@@ -524,15 +525,15 @@ trait TreeTrait
      */
     public function tree_children($model = NULL)
     {
-        $model = $model ? $model->tree() : $this;
+        $model = $model ? $model : $this;
         $child = $model->tree_directlyChildren();
         if ($child) {
             $model->tree_children = $child;
         }
         foreach ($child as $node) {
             /**  @var $node $this */
-            if (! $node->tree()->tree_isLastNode()) {
-                $node->tree()->tree_children();
+            if (! $node->tree_isLastNode()) {
+                $node->tree_children();
             }
         }
         return $model;
@@ -547,7 +548,7 @@ trait TreeTrait
         $topNodes = $this->tree_TopNodes();
         foreach ($topNodes as $node) {
             /**  @var $node $this */
-            $node->tree()->tree_children();
+            $node->tree_children();
         }
         return $topNodes;
     }
