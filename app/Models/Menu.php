@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\base\Model;
+use App\Models\base\TreeModel;
 
 /**
  * Class Menu
@@ -18,9 +19,8 @@ use App\Models\base\Model;
  * @property integer lft
  * @property integer rgt
  */
-class Menu extends Model
+class Menu extends TreeModel
 {
-
     public $table = 'menu';
     
     const CREATED_AT = 'created_at';
@@ -73,4 +73,20 @@ class Menu extends Model
         // TODO: Implement route() method.
         return 'menus';
     }
+
+    /**
+     * example：
+     * return ["lft", "rgt"];
+     * 设置数据表左右值字段名
+     *
+     * @return array
+     */
+    public function setLeftAndRightColumn()
+    {
+        // TODO: Implement setLeftAndRightColumn() method.
+        return [
+            "lft", "rgt"
+        ];
+    }
+
 }

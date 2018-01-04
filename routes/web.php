@@ -26,5 +26,6 @@ Route::get('/home', 'HomeController@index')->name('home');
  * -------------- MENU -----------------
  */
 Route::get('/menus/table', 'MenuController@table')->name('menus.table');
+Route::get('/demo', 'DemoController@index');
 
 Route::resource('menus', 'MenuController');
