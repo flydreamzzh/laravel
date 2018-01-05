@@ -13,7 +13,7 @@
         form.on('submit(submit)', function(data){
             $.post(data.form.action, data.field, function (response) {
                 if (response.success) {
-                    window.menuObj.update(response.data);
+                    $("#treeTable").fancytree("getTree").reload({url: "{{ route('menus.table') }}"});
                     layer.closeAll();
                     layer.msg(response.message, {icon: 1});
                 } else {

@@ -25,6 +25,7 @@
 
 #treeTable tbody .fancytree-title{
     line-height: 16px;
+    outline: 0;
 }
 
 #treeTable tbody tr .fancytree-custom-icon {

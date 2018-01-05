@@ -148,17 +148,15 @@ class MenuController extends AppBaseController
     public function destroy($id)
     {
         $menu = $this->menuRepository->findWithoutFail($id);
-
+//        return $this->sendError('菜单删除失败！');
         if (empty($menu)) {
-            Flash::error('Menu not found');
-
-            return redirect(route('menus.index'));
+            return $this->sendError('菜单不存在！');
         }
 
-        $this->menuRepository->delete($id);
+        if (! $menu->tree_remove()) {
+            return $this->sendError('菜单删除失败！');
+        }
+        return $this->sendResponse($menu, '菜单移除成功！');
 
-        Flash::success('Menu deleted successfully.');
-
-        return redirect(route('menus.index'));
     }
 }
