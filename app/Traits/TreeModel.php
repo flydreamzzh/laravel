@@ -98,6 +98,8 @@ abstract class TreeModel extends Eloquent
      */
     public $tree_children;
 
+    public $children_name = 'tree_children';
+
     /**
      * example：
      * return ["lft", "rgt"];
@@ -659,9 +661,10 @@ abstract class TreeModel extends Eloquent
             }
         } else {
             $children = $models->tree_children ? self::tree_array($models->tree_children) : [];
+            $children_name = $models->children_name;
             $models = $models->toArray();
             if($children)
-                $models['tree_children'] = $children;
+                $models[$children_name] = $children;
         }
         return $models;
     }

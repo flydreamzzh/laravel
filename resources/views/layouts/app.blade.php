@@ -273,7 +273,7 @@
             <ul class="nav sidebar-menu">
                 <li class="sidebar-label pt20">Menu</li>
                 <li>
-                    <a href="pages_calendar.html">
+                    <a href="{{ route('menus.index') }}">
                         <span class="fa fa-calendar"></span>
                         <span class="sidebar-title">Calendar</span>
                         <span class="sidebar-title-tray">
@@ -752,8 +752,8 @@
         <!-- End: Topbar -->
 
         <!-- Begin: Content -->
-        <section id="content">
-
+        <section id="content" class="table-layout">
+            @yield('content')
         </section>
         <!-- End: Content -->
 

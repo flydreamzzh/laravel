@@ -18,15 +18,18 @@ use App\Models\base\TreeModel;
  * @property string icon
  * @property integer lft
  * @property integer rgt
+ * @property integer type
  */
 class Menu extends TreeModel
 {
     public $table = 'menu';
+
+    public $children_name = 'children';
     
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-
+    protected $appends = ['title', 'edit_url', 'show_url', 'store_url', 'update_url', 'delete_url'];
 
     public $fillable = [
         'name',
@@ -34,7 +37,8 @@ class Menu extends TreeModel
         'url',
         'icon',
         'lft',
-        'rgt'
+        'rgt',
+        'type'
     ];
 
     /**
@@ -49,7 +53,8 @@ class Menu extends TreeModel
         'url' => 'string',
         'icon' => 'string',
         'lft' => 'integer',
-        'rgt' => 'integer'
+        'rgt' => 'integer',
+        'type' => 'integer'
     ];
 
     /**
@@ -61,6 +66,15 @@ class Menu extends TreeModel
         'name' => 'required|max:255',
         'url' => 'required',
     ];
+
+    /**
+     * fancytree 插件
+     * @return string
+     */
+    public function getTitleAttribute()
+    {
+        return $this->name;
+    }
 
     /**
      * 返回路由的名称

@@ -25,7 +25,8 @@ class MenuRepository extends BaseRepository
         'url',
         'icon',
         'lft',
-        'rgt'
+        'rgt',
+        'type'
     ];
 
     /**

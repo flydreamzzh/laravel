@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateMenuRequest;
 use App\Http\Requests\UpdateMenuRequest;
+use App\Models\Menu;
 use App\Repositories\MenuRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
@@ -39,11 +40,13 @@ class MenuController extends AppBaseController
 
     public function table(Request $request)
     {
-        $this->menuRepository->pushCriteria(new RequestCriteria($request));
+        $menus = Menu::tree_array((new Menu())->tree_list());
 
-        $menus = $this->menuRepository->paginate($request->get('limit'))->toArray();
+//        $this->menuRepository->pushCriteria(new RequestCriteria($request));
+//
+//        $menus = $this->menuRepository->all()->toArray();
 
-        return json_encode(array_merge($menus, [ 'count' => $menus['total'], 'code' => 0]), true);
+        return json_encode($menus, true);
     }
 
     /**
