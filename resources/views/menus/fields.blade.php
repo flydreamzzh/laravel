@@ -10,7 +10,7 @@
 <div class="layui-form-item">
     {{ Form::label('description', '描述', ['class' => 'layui-form-label']) }}
     <div class="layui-input-block">
-        {{ Form::textarea('description', null, ['rows' => 6, 'placeholder' => '请简单描述节点内容', 'class' => 'layui-textarea']) }}
+        {{ Form::textarea('description', null, ['rows' => 4, 'placeholder' => '请简单描述节点内容', 'class' => 'layui-textarea']) }}
     </div>
 </div>
 

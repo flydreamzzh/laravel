@@ -9,6 +9,30 @@
     min-height: 700px;
 }
 
+.menu-toolbar{
+    width: 100%;
+    height: 40px;
+    border: 1px solid #EDEDED;
+    border-bottom: 0;
+}
+
+.menu-search{
+    margin: 8px 10px;
+    width: 150px;
+    padding: 0 12px;
+    height: 24px;
+    border: 1px solid silver;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    border-radius: 12px;
+}
+
+.menu-search input {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
 #treeTable{
     width: 100%;
     outline: none;
