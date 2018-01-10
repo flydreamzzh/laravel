@@ -5,8 +5,11 @@
     <link rel="stylesheet" href="{{ asset('css/menu/menu.css') }}">
     <div class="menu">
         <div class="menu-toolbar">
-            <div class="menu-search">
+            <div class="menu-search pull-left">
                 <input type="text" placeholder="查找······" autocomplete="off" id="searchMenu">
+            </div>
+            <div class="menu-func pull-right">
+                <button class="btn btn-sm btn-dark" onclick="addMenu()"><i class="fa fa-plus"></i> 新增</button>
             </div>
         </div>
         <table id="treeTable">
@@ -44,7 +47,7 @@
     <script type="text/javascript">
         $("#treeTable").fancytree({
             extensions: ["table", "filter"],
-            checkbox: true,
+//            checkbox: true,
             source: {
                 url: "{{ route('menus.table') }}"
             },
@@ -123,6 +126,21 @@
             }
             filterFunc.call(tree, match, {})
         }).focus()
+        
+        function addMenu() {
+            $.get("{{ route('menus.create') }}", function (response) {
+                layui.use(['layer'], function () {
+                    layer.open({
+                        type: 1,
+                        title: '新增菜单',
+                        zIndex: 1200,
+                        area: ['700px', 'auto'],
+                        maxmin: true,
+                        content: response
+                    });
+                })
+            })
+        }
         
 
     </script>

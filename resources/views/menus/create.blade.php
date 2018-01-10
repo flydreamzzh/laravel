@@ -1,24 +1,35 @@
-@extends('layouts.app')
+{!! Form::open(['route' => 'menus.store', 'class' => 'layui-form', 'style' => 'padding: 10px 30px 10px 10px']) !!}
 
-@section('content')
-    <section class="content-header">
-        <h1>
-            Menu
-        </h1>
-    </section>
-    <div class="content">
-        @include('adminlte-templates::common.errors')
-        <div class="box box-primary">
+    @include('menus.fields')
 
-            <div class="box-body">
-                <div class="row">
-                    {!! Form::open(['route' => 'menus.store']) !!}
+{!! Form::close() !!}
 
-                        @include('menus.fields')
 
-                    {!! Form::close() !!}
-                </div>
-            </div>
-        </div>
-    </div>
-@endsection
+<script type="text/javascript">
+    layui.use(['form', 'table'], function() {
+        var form = layui.form, table = layui.table;
+        form.render();
+        form.on('submit(submit)', function(data){
+            $.post(data.form.action, data.field, function (response) {
+                if (response.success) {
+                    $("#treeTable").fancytree("getTree").reload({url: "{{ route('menus.table') }}"});
+                    layer.closeAll();
+                    layer.msg(response.message, {icon: 1});
+                } else {
+                    layer.msg(response.message, {icon: 2});
+                }
+            }).fail(function (data) {
+                var message = '';
+                $.each(data.responseJSON, function (key, value) {
+                    if (value instanceof Array) {
+                        message += value.join('<br>') + "<br>";
+                    } else {
+                        message += value + "<br>";
+                    }
+                });
+                layer.msg(message, {icon: 5});
+            });
+            return false;
+        });
+    })
+</script>

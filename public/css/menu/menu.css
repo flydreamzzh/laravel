@@ -33,6 +33,13 @@
     border: none;
 }
 
+.menu-func {
+    height: 100%;
+    line-height: 12px;
+    padding: 5px;
+    width: auto;
+}
+
 #treeTable{
     width: 100%;
     outline: none;

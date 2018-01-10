@@ -663,8 +663,7 @@ abstract class TreeModel extends Eloquent
             $children = $models->tree_children ? self::tree_array($models->tree_children) : [];
             $children_name = $models->children_name;
             $models = $models->toArray();
-            if($children)
-                $models[$children_name] = $children;
+            $models[$children_name] = $children;
         }
         return $models;
     }
