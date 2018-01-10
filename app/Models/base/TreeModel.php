@@ -2,7 +2,6 @@
 
 namespace App\Models\base;
 
-use Eloquent;
 use App\Traits\TreeModel as Tree;
 
 /**

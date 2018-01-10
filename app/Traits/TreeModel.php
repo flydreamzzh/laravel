@@ -3,7 +3,6 @@ namespace App\Traits;
 
 use Closure;
 use DB;
-use Eloquent;
 use Exception;
 
 /**
@@ -32,15 +31,17 @@ use Exception;
  * @author Administrator
  *
  */
-abstract class TreeModel extends Eloquent
+abstract class TreeModel extends \Eloquent
 {
     /**
      * 初始化类数据库字段信息
+     * TreeModel constructor.
+     * @param array $attributes
      * @throws Exception
      */
-    public function __construct()
+    public function __construct(array $attributes = [])
     {
-        parent::__construct();
+        parent::__construct($attributes);
         $this->query = $this->newQuery();
         $this->preQuery = $this->newQuery();
         $lr = $this->setLeftAndRightColumn();

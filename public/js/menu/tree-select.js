@@ -4699,7 +4699,7 @@ var Demo = function (_React$Component) {
                 searchPlaceholder: 'please search',
                 showSearch: true, allowClear: true, treeLine: true,
                 value: this.state.lv, labelInValue: true,
-                treeData: [{ label: 'pNode 01', value: '0-0', key: '0-0' }, { label: 'pNode 02', value: '0-1', key: '0-1' }, { label: 'pNode 03', value: '0-2', key: '0-2', isLeaf: true }],
+                treeData: treeData,
                 className: 'treeSelect',
                 treeNodeFilterProp: 'label',
                 filterTreeNode: this.filterTreeNode,

@@ -2,30 +2,34 @@
 
 namespace App\Models;
 
-use App\Models\base\Model;
+use Webpatser\Uuid\Uuid;
 use App\Models\base\TreeModel;
 
 /**
  * Class Menu
  * @package App\Models
- * @version September 8, 2017, 3:49 am UTC
+ * @version January 10, 2018, 3:25 am UTC
  *
- * @method static Menu find($id=null, $columns = array())
- * @method static Menu|\Illuminate\Database\Eloquent\Collection findOrFail($id, $columns = ['*'])
  * @property string name
+ * @property smallInteger type
  * @property string description
  * @property string url
  * @property string icon
  * @property integer lft
  * @property integer rgt
- * @property integer type
  */
 class Menu extends TreeModel
 {
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     * @var bool
+     */
+    public $incrementing = false;
+
     public $table = 'menu';
 
     public $children_name = 'children';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -33,6 +37,7 @@ class Menu extends TreeModel
 
     public $fillable = [
         'name',
+        'type',
         'description',
         'url',
         'icon',
@@ -47,7 +52,7 @@ class Menu extends TreeModel
      * @var array
      */
     protected $casts = [
-        'id' => 'integer',
+        'id' => 'string',
         'name' => 'string',
         'description' => 'string',
         'url' => 'string',
@@ -63,8 +68,9 @@ class Menu extends TreeModel
      * @var array
      */
     public static $rules = [
-        'name' => 'required|max:255',
+        'name' => 'required|max:20',
         'url' => 'required',
+        'icon' => 'required',
     ];
 
     /**
@@ -128,6 +134,28 @@ class Menu extends TreeModel
         return [
             "lft", "rgt"
         ];
+    }
+
+    /**
+     * The "booting" method of the model.
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function($model)
+        {
+            /** @var \Eloquent $model*/
+            $model->{$model->getKeyName()} = (string)self::generateNewId();
+        });
+    }
+
+    /**
+     * @return string Uuid
+     */
+    public static function generateNewId()
+    {
+        return Uuid::generate();
     }
 
 }

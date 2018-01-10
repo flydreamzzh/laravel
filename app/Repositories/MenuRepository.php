@@ -8,7 +8,7 @@ use InfyOm\Generator\Common\BaseRepository;
 /**
  * Class MenuRepository
  * @package App\Repositories
- * @version September 8, 2017, 3:49 am UTC
+ * @version January 10, 2018, 3:48 am UTC
  *
  * @method Menu findWithoutFail($id, $columns = ['*'])
  * @method Menu find($id, $columns = ['*'])
@@ -21,12 +21,12 @@ class MenuRepository extends BaseRepository
      */
     protected $fieldSearchable = [
         'name',
+        'type',
         'description',
         'url',
         'icon',
         'lft',
-        'rgt',
-        'type'
+        'rgt'
     ];
 
     /**
