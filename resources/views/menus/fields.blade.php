@@ -2,8 +2,9 @@
 <div class="layui-form-item">
     {{ Form::label('url', '上级', ['class' => 'layui-form-label']) }}
     <div class="layui-input-block" id="__react-content">
-        {{ Form::hidden('parent', 4, ['id' => "treeSelectValue"]) }}
+        <!-- 插件内容 -->
     </div>
+    {{ Form::hidden('parent', null, ['id' => "treeSelectValue"]) }}
 </div>
 
 <!-- Name Field -->
@@ -39,7 +40,7 @@
 </div>
 
 <!-- treeSelect插件请求数据路由-->
-<input type="hidden" id="treeSelectUrl" value="{{ route('menus.table') }}">
+<input type="hidden" id="treeSelectUrl" value="{{ route('menus.parentList', ['id' => $menu->id]) }}">
 
 {{--<!-- Lft Field -->--}}
 {{--<div class="layui-form-item">--}}

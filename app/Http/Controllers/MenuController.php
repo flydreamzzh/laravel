@@ -49,6 +49,14 @@ class MenuController extends AppBaseController
         return json_encode($menus, true);
     }
 
+    public function parentList(Request $request)
+    {
+        $id = $request->get('id');
+        $menus = Menu::tree_array((new Menu())->tree_list([$id]));
+
+        return json_encode($menus, true);
+    }
+
     /**
      * Show the form for creating a new Menu.
      *
@@ -56,7 +64,8 @@ class MenuController extends AppBaseController
      */
     public function create()
     {
-        return view('menus.create');
+        $menu = new Menu();
+        return view('menus.create')->with('menu', $menu);
     }
 
     /**
@@ -70,11 +79,14 @@ class MenuController extends AppBaseController
     {
         $input = $request->all();
 
-        $menu = $this->menuRepository->create($input);
+        $menu = new Menu();
+        $menu->fill($input);
+        $parent = $this->menuRepository->findWithoutFail($input['parent']);
 
-        Flash::success('Menu saved successfully.');
-
-        return redirect(route('menus.index'));
+        if ($menu->tree_addNode($parent)) {
+            return $this->sendResponse($menu->toArray(), '节点添加成功！');
+        }
+        return $this->sendError('节点添加成功！');
     }
 
     /**

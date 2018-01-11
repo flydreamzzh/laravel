@@ -82,7 +82,6 @@ var treeData = (function () {
         async: false,
         success: function (response) {
             data = JSON.parse(response);
-            console.log(data);
         }
     });
     return data;
@@ -93,8 +92,11 @@ var treeData = (function () {
  * @param treeLabel 初始化label
  */
 var treeValue = $("#treeSelectValue").val();
-var treeLabel = findPath(treeValue, treeData).map(function (i) { return i.label; }).reverse().join(' > ');
-
+var valueObj = { value: 'null', label: '上级节点，不选为顶级节点' };
+if (treeValue) {
+    var treeLabel = findPath(treeValue, treeData).map(function (i) { return i.label; }).reverse().join(' > ');
+    valueObj = { value: treeValue, label: treeLabel };
+}
 
 var Demo = function (_React$Component) {
     _inherits(Demo, _React$Component);
@@ -118,7 +120,7 @@ var Demo = function (_React$Component) {
                 return treeValue;
             })(),
             // value: ['0-0-0-0-value', '0-0-0-1-value', '0-0-0-2-value'],
-            lv: { value: treeValue, label: treeLabel },
+            lv: valueObj,
             multipleValue: [],
             simpleTreeData: [{ key: 1, pId: 0, label: 'test1', value: 'test1' }, { key: 121, pId: 0, label: 'test1', value: 'test121' }, { key: 11, pId: 1, label: 'test11', value: 'test11' }, { key: 12, pId: 1, label: 'test12', value: 'test12' }, { key: 111, pId: 11, label: 'test111', value: 'test111' }],
             treeDataSimpleMode: {
@@ -134,16 +136,16 @@ var Demo = function (_React$Component) {
                 visible: false
             });
         }, _this.onSearch = function (value) {
-            console.log(value, _arguments);
+            // console.log(value, _arguments);
         }, _this.onChange = function (value) {
-            console.log('onChange', _arguments);
+            // console.log('onChange', _arguments);
             _this.setState({ value: value });
         }, _this.onChangeChildren = function (value) {
-            console.log('onChangeChildren', _arguments);
+            // console.log('onChangeChildren', _arguments);
             var pre = value ? _this.state.value : undefined;
             _this.setState({ value: isLeaf(value) ? value : pre });
         }, _this.onChangeLV = function (value) {
-            console.log('labelInValue', _arguments);
+            // console.log('labelInValue', _arguments);
             if (!value) {
                 _this.setState({ lv: undefined });
                 return;
@@ -152,14 +154,15 @@ var Demo = function (_React$Component) {
                 return i.label;
             }).reverse().join(' > ');
             _this.setState({ lv: { value: value.value, label: path } });
+            $("#treeSelectValue").val(value.value);
         }, _this.onMultipleChange = function (value) {
-            console.log('onMultipleChange', _arguments);
+            // console.log('onMultipleChange', _arguments);
             _this.setState({ multipleValue: value });
         }, _this.onSelect = function () {
             // use onChange instead
-            console.log(_arguments);
+            // console.log(_arguments);
         }, _this.onDropdownVisibleChange = function (visible, info) {
-            console.log(visible, _this.state.value, info);
+            // console.log(visible, _this.state.value, info);
             if (Array.isArray(_this.state.value) && _this.state.value.length > 1 && _this.state.value.length < 3) {
                 alert('please select more than two item or less than one item.');
                 return false;
@@ -190,7 +193,7 @@ var Demo = function (_React$Component) {
                 placeholder: _react2.default.createElement(
                     'i',
                     null,
-                    '\u8BF7\u4E0B\u62C9\u9009\u62E9'
+                    '上级节点，不选为顶级节点'
                 ),
                 searchPlaceholder: 'please search',
                 showSearch: true, allowClear: true, treeLine: true,

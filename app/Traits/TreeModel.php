@@ -3,6 +3,7 @@ namespace App\Traits;
 
 use Closure;
 use DB;
+use Eloquent;
 use Exception;
 
 /**
@@ -53,6 +54,8 @@ abstract class TreeModel extends \Eloquent
             throw new Exception("无限分类树左右值字段名称配置失败");
         }
     }
+
+//    public $parent;
 
     /**
      * 查询条件
@@ -224,6 +227,46 @@ abstract class TreeModel extends \Eloquent
                 return false;
             }
         }
+    }
+
+    /**
+     * 添加当前节点到某父节点 或 为顶级节点
+     * @param Eloquent $parent
+     * @return bool
+     */
+    public function tree_addNode($parent = null)
+    {
+        DB::beginTransaction();
+        try {
+            if ($parent->exists) {
+                $lr = $parent->tree_getLeftAndRight();
+                $lefts = DB::table($this->table)->where($this->left, '>', max($lr))->addBinding($this->preQuery->getBindings())->increment($this->left, 2);
+                $rights = DB::table($this->table)->where($this->right, '>=', max($lr))->addBinding($this->preQuery->getBindings())->increment($this->right, 2);
+                if($lefts || $rights) {
+                    $this->{$this->left} = max($lr);
+                    $this->{$this->right} = max($lr) + 1;
+                    if ($this->save()) {
+                        DB::commit();
+                        return true;
+                    }
+                }
+            } else {
+                $lr = $this->tree_getMinLeftAndMaxRight();
+                $this->{$this->left} = max($lr);
+                $this->{$this->right} = max($lr) + 1;
+                if ($this->save()) {
+                    DB::commit();
+                    return true;
+                }
+            }
+            DB::rollBack();
+            return false;
+        } catch (Exception $e) {
+            var_dump($e->getMessage());exit();
+            DB::rollBack();
+            return false;
+        }
+
     }
 
     /**
@@ -523,37 +566,47 @@ abstract class TreeModel extends \Eloquent
     /**
      * 获取当前节点对象的所有子节点树
      * @param Eloquent $model 需要查询的节点(不填就是当前对象)
+     *  @param array $except 移除项主键
      * @return Eloquent
      * 返回信息中使用$model->tree_children即可
      */
-    public function tree_children($model = NULL)
+    public function tree_children($model = NULL, $except = [])
     {
         $model = $model ? $model : $this;
         $child = $model->tree_directlyChildren();
-        if ($child) {
-            $model->tree_children = $child;
-        }
-        foreach ($child as $node) {
+        foreach ($child as $key => $node) {
             /**  @var $node $this */
-            if (! $node->tree_isLastNode()) {
-                $node->tree_children();
+            if (! in_array($node->{$this->primaryKey}, $except)) {
+                if (! $node->tree_isLastNode()) {
+                    $node->tree_children();
+                }
+            } else {
+                unset($child[$key]);
             }
+        }
+        if ($child) {
+            $model->tree_children = array_values($child);
         }
         return $model;
     }
 
     /**
      * 获取整棵树
-     * @return [Eloquent]
+     * @param array $except 移除项主键
+     * @return Eloquent[]
      */
-    public function tree_list()
+    public function tree_list($except = [])
     {
         $topNodes = $this->tree_TopNodes();
-        foreach ($topNodes as $node) {
+        foreach ($topNodes as $key => $node) {
             /**  @var $node $this */
-            $node->tree_children();
+            if (! in_array($node->{$this->primaryKey}, $except)) {
+                $node->tree_children(null, $except);
+            } else {
+                unset($topNodes[$key]);
+            }
         }
-        return $topNodes;
+        return array_values($topNodes);
     }
 
     /**

@@ -10,6 +10,7 @@ use App\Models\base\TreeModel;
  * @package App\Models
  * @version January 10, 2018, 3:25 am UTC
  *
+ * @property string id
  * @property string name
  * @property smallInteger type
  * @property string description
@@ -33,7 +34,7 @@ class Menu extends TreeModel
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-    protected $appends = ['title', 'key', 'value', 'label', 'edit_url', 'show_url', 'store_url', 'update_url', 'delete_url'];
+    protected $appends = ['title', 'key', 'value', 'label', 'parent', 'edit_url', 'show_url', 'store_url', 'update_url', 'delete_url'];
 
     public $fillable = [
         'name',

@@ -2,6 +2,7 @@
 
 namespace App\Models\base;
 
+use App\Models\Menu;
 use App\Traits\TreeModel as Tree;
 
 /**
@@ -13,7 +14,7 @@ abstract class TreeModel extends Tree
     /**
      * @var array
      */
-    protected $appends = ['edit_url', 'show_url', 'store_url', 'update_url', 'delete_url'];
+    protected $appends = ['parent', 'edit_url', 'show_url', 'store_url', 'update_url', 'delete_url'];
 
     /**
      * 返回路由的名称
@@ -22,6 +23,13 @@ abstract class TreeModel extends Tree
      * @return string
      */
     abstract public function route();
+
+    public function getParentAttribute()
+    {
+        /** @var Menu $parent */
+        $parent = $this->exists ? $this->tree_directlyParent() : null;
+        return $parent ? $parent->id : null;
+    }
 
     public function getShowUrlAttribute()
     {

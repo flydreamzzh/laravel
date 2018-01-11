@@ -1,4 +1,4 @@
-{!! Form::open(['route' => 'menus.store', 'class' => 'layui-form', 'style' => 'padding: 10px 30px 10px 10px']) !!}
+{!! Form::model($menu, ['route' => 'menus.store', 'class' => 'layui-form', 'style' => 'padding: 10px 30px 10px 10px']) !!}
 
     @include('menus.fields')
 
@@ -18,15 +18,8 @@
                 } else {
                     layer.msg(response.message, {icon: 2});
                 }
-            }).fail(function (data) {
-                var message = '';
-                $.each(data.responseJSON, function (key, value) {
-                    if (value instanceof Array) {
-                        message += value.join('<br>') + "<br>";
-                    } else {
-                        message += value + "<br>";
-                    }
-                });
+            }).fail(function (response) {
+                var message = response.responseJSON.message;
                 layer.msg(message, {icon: 5});
             });
             return false;
