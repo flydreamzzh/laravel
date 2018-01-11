@@ -4656,6 +4656,7 @@ var Demo = function (_React$Component) {
         }, _this.onChangeLV = function (value) {
             // console.log('labelInValue', _arguments);
             if (!value) {
+                $("#treeSelectValue").val('');
                 _this.setState({ lv: undefined });
                 return;
             }

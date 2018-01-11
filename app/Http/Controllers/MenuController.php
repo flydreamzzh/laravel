@@ -145,7 +145,19 @@ class MenuController extends AppBaseController
             return response()->json([false, '节点不存在！']);
         }
 
+        /** @var Menu $menu */
         $menu = $this->menuRepository->update($request->all(), $id);
+
+        $parent_id = $request->get('parent');
+        /** @var Menu $parent */
+        $parent = $menu->tree_directlyParent();
+        if ($parent_id !== ($parent ? $parent->id : null)) {
+            if ($parent_id) {
+                $menu->tree_moveNode($parent);
+            } else {
+                $menu->tree_setTopNode();
+            }
+        }
 
         return $this->sendResponse($menu->toArray(), '节点更新成功！');
     }
