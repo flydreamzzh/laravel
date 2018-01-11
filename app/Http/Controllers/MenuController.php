@@ -153,7 +153,9 @@ class MenuController extends AppBaseController
         $parent = $menu->tree_directlyParent();
         if ($parent_id !== ($parent ? $parent->id : null)) {
             if ($parent_id) {
-                $menu->tree_moveNode($parent);
+                $newParent = Menu::findOrFail($parent_id);
+                if ($newParent)
+                    $menu->tree_moveNode($newParent);
             } else {
                 $menu->tree_setTopNode();
             }
