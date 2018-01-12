@@ -413,6 +413,7 @@ abstract class TreeModel extends \Eloquent
     /**
      * 同父同级节点进行    下移
      * @param Eloquent $model 被操作的对象（不填就是当前对象）
+     * @return bool
      */
     public function tree_moveDown($model = NULL)
     {
@@ -464,7 +465,7 @@ abstract class TreeModel extends \Eloquent
                 return false;
             }
         }
-        return false;
+        return true;
     }
 
     /**
@@ -566,7 +567,7 @@ abstract class TreeModel extends \Eloquent
     /**
      * 获取当前节点对象的所有子节点树
      * @param Eloquent $model 需要查询的节点(不填就是当前对象)
-     *  @param array $except 移除项主键
+     * @param array $except 移除项主键
      * @return Eloquent
      * 返回信息中使用$model->tree_children即可
      */
@@ -576,7 +577,7 @@ abstract class TreeModel extends \Eloquent
         $child = $model->tree_directlyChildren();
         foreach ($child as $key => $node) {
             /**  @var $node $this */
-            if (! in_array($node->{$this->primaryKey}, $except)) {
+            if (! in_array($node->{$model->primaryKey}, $except)) {
                 if (! $node->tree_isLastNode()) {
                     $node->tree_children();
                 }

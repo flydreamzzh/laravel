@@ -27,6 +27,8 @@ Route::get('/home', 'HomeController@index')->name('home');
  */
 Route::get('/menus/table', 'MenuController@table')->name('menus.table');
 Route::get('/menus/parentList', 'MenuController@parentList')->name('menus.parentList');
+Route::post('/menus/up', 'MenuController@moveUp')->name('menus.moveUp');
+Route::post('/menus/down', 'MenuController@moveDown')->name('menus.moveDown');
 Route::get('/demo', 'DemoController@index');
 
 Route::resource('menus', 'MenuController');

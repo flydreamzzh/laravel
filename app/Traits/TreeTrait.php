@@ -367,6 +367,7 @@ trait TreeTrait
     /**
      * 同父同级节点进行    下移
      * @param Eloquent $model 被操作的对象（不填就是当前对象）
+     * @return bool
      */
     public function tree_moveDown($model = NULL)
     {
@@ -417,7 +418,7 @@ trait TreeTrait
                 return false;
             }
         }
-        return false;
+        return true;
     }
 
     /**
@@ -519,37 +520,47 @@ trait TreeTrait
     /**
      * 获取当前节点对象的所有子节点树
      * @param Eloquent $model 需要查询的节点(不填就是当前对象)
+     * @param array $except 移除项主键
      * @return Eloquent
      * 返回信息中使用$model->tree_children即可
      */
-    public function tree_children($model = NULL)
+    public function tree_children($model = NULL, $except = [])
     {
         $model = $model ? $model->tree() : $this;
         $child = $model->tree_directlyChildren();
-        if ($child) {
-            $model->tree_children = $child;
-        }
-        foreach ($child as $node) {
+        foreach ($child as $key => $node) {
             /**  @var $node $this */
-            if (! $node->tree()->tree_isLastNode()) {
-                $node->tree()->tree_children();
+            if (! in_array($node->{$model->primaryKey}, $except)) {
+                if (! $node->tree()->tree_isLastNode()) {
+                    $node->tree()->tree_children();
+                }
+            } else {
+                unset($child[$key]);
             }
+        }
+        if ($child) {
+            $model->tree_children = array_values($child);
         }
         return $model;
     }
 
     /**
      * 获取整棵树
-     * @return [Eloquent]
+     * @param array $except 移除项主键
+     * @return Eloquent[]
      */
-    public function tree_list()
+    public function tree_list($except = [])
     {
         $topNodes = $this->tree_TopNodes();
-        foreach ($topNodes as $node) {
+        foreach ($topNodes as $key => $node) {
             /**  @var $node $this */
-            $node->tree()->tree_children();
+            if (! in_array($node->{$this->primaryKey}, $except)) {
+                $node->tree()->tree_children(null, $except);
+            } else {
+                unset($topNodes[$key]);
+            }
         }
-        return $topNodes;
+        return array_values($topNodes);
     }
 
     /**

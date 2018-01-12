@@ -17,7 +17,7 @@
                 <col width="250px">
                 <col width="200px">
                 <col>
-                <col width="60px">
+                <col width="90px">
             </colgroup>
             <thead>
                 <tr>
@@ -71,6 +71,8 @@
                 $tdList.eq(1).text(node.data.url);
                 $tdList.eq(2).text(node.data.description ? node.data.description : '');
                 $tdList.eq(3).html('<a href="javascript:void(0)" class="updateMenu"><i class="glyphicon glyphicon-edit"></i></a>&nbsp;' +
+                    '<a href="javascript:void(0)" class="moveUp"><i class="glyphicons glyphicons-up_arrow"></i></a>' +
+                    '<a href="javascript:void(0)" class="moveDown"><i class="glyphicons glyphicons-down_arrow"></i></a>' +
                     '<a href="javascript:void(0)" class="deleteMenu"><i class="glyphicons glyphicons-bin"></i></a>');
             }
         });
@@ -113,6 +115,42 @@
                         });
                         return false;
                     }
+                });
+            })
+        }).delegate(".moveUp", "click", function(e){
+            var node = $.ui.fancytree.getNode(e),
+                $input = $(e.target);
+            e.stopPropagation();  // prevent fancytree activate for this row
+            layui.use(['layer'], function () {
+                $.post('{{ route('menus.moveUp') }}', {id: node.data.id}, function (response) {
+                    if (response.success) {
+//                        layer.msg(response.message, {icon: 1});
+                    } else {
+                        layer.msg(response.message, {icon: 2});
+                    }
+                    $("#treeTable").fancytree("getTree").reload({url: "{{ route('menus.table') }}"});
+                }).fail(function (response) {
+                    var message = response.responseJSON.message;
+                    layer.msg(message, {icon: 5});
+                    $("#treeTable").fancytree("getTree").reload({url: "{{ route('menus.table') }}"});
+                });
+            })
+        }).delegate(".moveDown", "click", function(e){
+            var node = $.ui.fancytree.getNode(e),
+                $input = $(e.target);
+            e.stopPropagation();  // prevent fancytree activate for this row
+            layui.use(['layer'], function () {
+                $.post('{{ route('menus.moveDown') }}', {id: node.data.id}, function (response) {
+                    if (response.success) {
+//                        layer.msg(response.message, {icon: 1});
+                    } else {
+                        layer.msg(response.message, {icon: 2});
+                    }
+                    $("#treeTable").fancytree("getTree").reload({url: "{{ route('menus.table') }}"});
+                }).fail(function (response) {
+                    var message = response.responseJSON.message;
+                    layer.msg(message, {icon: 5});
+                    $("#treeTable").fancytree("getTree").reload({url: "{{ route('menus.table') }}"});
                 });
             })
         });

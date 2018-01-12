@@ -164,6 +164,26 @@ class MenuController extends AppBaseController
         return $this->sendResponse($menu->toArray(), '节点更新成功！');
     }
 
+    public function moveUp(Request $request)
+    {
+        $id = $request->get('id');
+        $menu = $this->menuRepository->findWithoutFail($id);
+        if (! $menu->tree_moveUp()) {
+            return $this->sendError('菜单更新失败！');
+        }
+        return $this->sendResponse($menu, '菜单上移成功！');
+    }
+
+    public function moveDown(Request $request)
+    {
+        $id = $request->get('id');
+        $menu = $this->menuRepository->findWithoutFail($id);
+        if (! $menu->tree_moveDown()) {
+            return $this->sendError('菜单更新失败！');
+        }
+        return $this->sendResponse($menu, '菜单下移成功！');
+    }
+
     /**
      * Remove the specified Menu from storage.
      *
