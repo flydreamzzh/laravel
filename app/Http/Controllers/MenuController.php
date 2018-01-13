@@ -86,7 +86,7 @@ class MenuController extends AppBaseController
         if ($menu->tree_addNode($parent)) {
             return $this->sendResponse($menu->toArray(), '节点添加成功！');
         }
-        return $this->sendError('节点添加成功！');
+        return $this->sendError('节点添加失败！');
     }
 
     /**

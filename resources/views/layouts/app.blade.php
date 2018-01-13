@@ -23,7 +23,16 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('layui/css/layui.css') }}"  media="all">
+
+    <!-- jQuery -->
+    <script type="text/javascript" src="{{ asset("vendor/jquery/jquery-1.11.1.min.js") }}"></script>
+    <script type="text/javascript" src="{{ asset("vendor/jquery/jquery_ui/jquery-ui.min.js") }}"></script>
+
+    <!-- layui -->
     <script type="text/javascript" src="{{ asset('layui/layui.js') }}"></script>
+
+    <!-- Bootstrap -->
+    <script type="text/javascript" src="{{ asset("assets/js/bootstrap/bootstrap.min.js") }}"></script>
 
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -449,13 +458,6 @@
 
 <!-- Google Map API -->
 <!--<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>-->
-
-<!-- jQuery -->
-<script type="text/javascript" src="{{ asset("vendor/jquery/jquery-1.11.1.min.js") }}"></script>
-<script type="text/javascript" src="{{ asset("vendor/jquery/jquery_ui/jquery-ui.min.js") }}"></script>
-
-<!-- Bootstrap -->
-<script type="text/javascript" src="{{ asset("assets/js/bootstrap/bootstrap.min.js") }}"></script>
 
 <!-- Sparklines CDN -->
 <script type="text/javascript" src="{{ asset("assets/js/utility/jquery.sparkline.min.js") }}"></script>

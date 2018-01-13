@@ -7,6 +7,15 @@
     {{ Form::hidden('parent', null, ['id' => "treeSelectValue"]) }}
 </div>
 
+<!-- Type Field -->
+<div class="layui-form-item">
+    <label class="layui-form-label">类型</label>
+    <div class="layui-input-block">
+        {{ Form::radio('type', 0, 'checked', ['title' => '菜单']) }}
+        {{ Form::radio('type', 1, null, ['title' => '文字']) }}
+    </div>
+</div>
+
 <!-- Name Field -->
 <div class="layui-form-item">
     {{ Form::label('name', '名称', ['class' => 'layui-form-label']) }}

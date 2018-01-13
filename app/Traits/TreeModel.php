@@ -238,7 +238,7 @@ abstract class TreeModel extends \Eloquent
     {
         DB::beginTransaction();
         try {
-            if ($parent->exists) {
+            if ($parent && $parent->exists) {
                 $lr = $parent->tree_getLeftAndRight();
                 $lefts = DB::table($this->table)->where($this->left, '>', max($lr))->addBinding($this->preQuery->getBindings())->increment($this->left, 2);
                 $rights = DB::table($this->table)->where($this->right, '>=', max($lr))->addBinding($this->preQuery->getBindings())->increment($this->right, 2);
@@ -262,7 +262,6 @@ abstract class TreeModel extends \Eloquent
             DB::rollBack();
             return false;
         } catch (Exception $e) {
-            var_dump($e->getMessage());exit();
             DB::rollBack();
             return false;
         }
