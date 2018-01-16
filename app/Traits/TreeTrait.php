@@ -124,9 +124,10 @@ trait TreeTrait
     }
 
     /**
+     * @param Closure $closure
      * @return $this
      */
-    public function tree_where(Closure $closure, $query)
+    public function tree_where(Closure $closure)
     {
         call_user_func($closure, $query = $this->query);
         return $this;
@@ -173,8 +174,8 @@ trait TreeTrait
      */
     public function tree_getMinLeftAndMaxRight()
     {
-        $left = DB::table($this->table)->addBinding($this->preQuery->getBindings())->min($this->left);
-        $right = DB::table($this->table)->addBinding($this->preQuery->getBindings())->max($this->right);
+        $left = DB::table($this->table)->addNestedWhereQuery($this->preQuery->getQuery())->min($this->left);
+        $right = DB::table($this->table)->addNestedWhereQuery($this->preQuery->getQuery())->max($this->right);
 //        $left = DB::table($this->table)->min($this->left);
 //        $right = DB::table($this->table)->max($this->right);
         if(is_numeric($left) && is_numeric($right)) {
@@ -209,7 +210,7 @@ trait TreeTrait
                 $len = DB::table($this->table)
                     ->where($this->left, '>=', min($lr))
                     ->where($this->right, '<=', max($lr))
-                    ->addBinding($this->preQuery->getBindings())
+                    ->addNestedWhereQuery($this->preQuery->getQuery())
                     ->update([
                         $this->left => DB::raw("$this->left + $dif"),
                         $this->right => DB::raw("$this->right + $dif"),
@@ -234,8 +235,8 @@ trait TreeTrait
             DB::beginTransaction();
             try {
                 $lr = $this->tree_getLeftAndRight();
-                $lefts = DB::table($this->table)->where($this->left, '>', max($lr))->addBinding($this->preQuery->getBindings())->increment($this->left, 2);
-                $rights = DB::table($this->table)->where($this->right, '>=', max($lr))->addBinding($this->preQuery->getBindings())->increment($this->right, 2);
+                $lefts = DB::table($this->table)->where($this->left, '>', max($lr))->addNestedWhereQuery($this->preQuery->getQuery())->increment($this->left, 2);
+                $rights = DB::table($this->table)->where($this->right, '>=', max($lr))->addNestedWhereQuery($this->preQuery->getQuery())->increment($this->right, 2);
 
                 if($lefts || $rights) {
                     $model->{$this->left} = max($lr);
@@ -266,7 +267,7 @@ trait TreeTrait
         $len = DB::table($this->table)
             ->where($this->left, '>=', min($lr))
             ->where($this->right, '<=', max($lr))
-            ->addBinding($this->preQuery->getBindings())
+            ->addNestedWhereQuery($this->preQuery->getQuery())
             ->delete();
         return $len;
     }
@@ -282,7 +283,7 @@ trait TreeTrait
         $len = DB::table($this->table)
             ->where($this->left, '>', min($lr))
             ->where($this->right, '<', max($lr))
-            ->addBinding($this->preQuery->getBindings())
+            ->addNestedWhereQuery($this->preQuery->getQuery())
             ->delete();
         return $len;
     }
@@ -306,21 +307,21 @@ trait TreeTrait
             $models = DB::table($this->table)->select(['id'=>$this->primaryKey])
                 ->where($this->left, '>=', min($lr))
                 ->where($this->right, '<=', max($lr))
-                ->addBinding($this->preQuery->getBindings())
+                ->addNestedWhereQuery($this->preQuery->getQuery())
                 ->get();
             $ids = array_pluck($models, 'id');
 
             /** @var array $leftmodels 要更新左值的行主键（未去除要移动的行主键）*/
             $leftmodels = DB::table($this->table)->select(['id'=>$this->primaryKey])
                 ->where($this->left, '>', max($plr))
-                ->addBinding($this->preQuery->getBindings())
+                ->addNestedWhereQuery($this->preQuery->getQuery())
                 ->get();
             $leftIds = array_pluck($leftmodels, 'id');
 
             /** @var array $rightmodels 要更新右值的行主键（未去除要移动的行主键）*/
             $rightmodels = DB::table($this->table)->select(['id'=>$this->primaryKey])
                 ->where($this->right, '>=', max($plr))
-                ->addBinding($this->preQuery->getBindings())
+                ->addNestedWhereQuery($this->preQuery->getQuery())
                 ->get();
             $rightIds = array_pluck($rightmodels, 'id');
 
@@ -434,8 +435,8 @@ trait TreeTrait
         $models = $this
             ->where($this->left, '>', min($lr)-1)
             ->where($this->right, '<', max($lr)+1)
-            ->addBinding($this->preQuery->getBindings())
-            ->addBinding($this->query->getBindings())
+            ->addNestedWhereQuery($this->preQuery->getQuery())
+            ->addNestedWhereQuery($this->query->getQuery())
             ->orderBy($this->left)
             ->get();
 
@@ -443,6 +444,8 @@ trait TreeTrait
         foreach ($models as $node) {
             /**  @var $node $this */
             if (! $node->tree()->tree_directlyParent()) {
+                $node->query = $this->query;
+                $node->preQuery = $this->preQuery;
                 $directlyChildren[] = $node;
             }
         }
@@ -461,7 +464,7 @@ trait TreeTrait
         $parent = $this
             ->where($this->left, '<', min($lr))
             ->where($this->right, '>', max($lr))
-            ->addBinding($this->preQuery->getBindings())
+            ->addNestedWhereQuery($this->preQuery->getQuery())
             ->orderBy($this->left, 'desc')
             ->first();
         return $parent ? $parent : null;
@@ -504,13 +507,15 @@ trait TreeTrait
         $models = $this
             ->where($this->left, '>', min($lr))
             ->where($this->right, '<', max($lr))
-            ->addBinding($this->preQuery->getBindings())
-            ->addBinding($this->query->getBindings())
+            ->addNestedWhereQuery($this->preQuery->getQuery())
+            ->addNestedWhereQuery($this->query->getQuery())
             ->orderBy($this->left)
             ->get();
         foreach ($models as $node) {
             /**  @var $node $this */
             if ($node->tree()->tree_isDirectlyParent($this)) {
+                $node->query = $this->query;
+                $node->preQuery = $this->preQuery;
                 $directlyChildren[] = $node;
             }
         }
@@ -622,7 +627,7 @@ trait TreeTrait
         $len = DB::table($this->table)
             ->where($this->left,'<', min($lr))
             ->where($this->right,'>', max($lr))
-            ->addBinding($this->preQuery->getBindings())
+            ->addNestedWhereQuery($this->preQuery->getQuery())
             ->count();
         return ! $len ? true : false;
     }
@@ -638,8 +643,8 @@ trait TreeTrait
         $len = DB::table($this->table)
             ->where($this->left,'>', min($lr))
             ->where($this->right,'<', max($lr))
-            ->addBinding($this->preQuery->getBindings())
-            ->addBinding($this->query->getBindings())
+            ->addNestedWhereQuery($this->preQuery->getQuery())
+            ->addNestedWhereQuery($this->query->getQuery())
             ->count();
         return $len;
     }

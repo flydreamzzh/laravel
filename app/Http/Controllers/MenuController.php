@@ -52,7 +52,9 @@ class MenuController extends AppBaseController
     public function parentList(Request $request)
     {
         $id = $request->get('id');
-        $menus = Menu::tree_array((new Menu())->tree_list([$id]));
+        $menus = Menu::tree_array((new Menu())->tree_where(function ($query) {
+            $query->where(['type' => 0]);
+        })->tree_list([$id]));
 
         return json_encode($menus, true);
     }

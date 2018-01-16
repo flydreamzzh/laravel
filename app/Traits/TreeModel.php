@@ -129,10 +129,9 @@ abstract class TreeModel extends \Eloquent
 
     /**
      * @param Closure $closure
-     * @param $query
      * @return $this
      */
-    public function tree_where(Closure $closure, $query)
+    public function tree_where(Closure $closure)
     {
         call_user_func($closure, $query = $this->query);
         return $this;
@@ -179,8 +178,8 @@ abstract class TreeModel extends \Eloquent
      */
     public function tree_getMinLeftAndMaxRight()
     {
-        $left = DB::table($this->table)->addBinding($this->preQuery->getBindings())->min($this->left);
-        $right = DB::table($this->table)->addBinding($this->preQuery->getBindings())->max($this->right);
+        $left = DB::table($this->table)->addNestedWhereQuery($this->preQuery->getQuery())->min($this->left);
+        $right = DB::table($this->table)->addNestedWhereQuery($this->preQuery->getQuery())->max($this->right);
 //        $left = DB::table($this->table)->min($this->left);
 //        $right = DB::table($this->table)->max($this->right);
         if(is_numeric($left) && is_numeric($right)) {
@@ -215,7 +214,7 @@ abstract class TreeModel extends \Eloquent
                 $len = DB::table($this->table)
                     ->where($this->left, '>=', min($lr))
                     ->where($this->right, '<=', max($lr))
-                    ->addBinding($this->preQuery->getBindings())
+                    ->addNestedWhereQuery($this->preQuery->getQuery())
                     ->update([
                         $this->left => DB::raw("$this->left + $dif"),
                         $this->right => DB::raw("$this->right + $dif"),
@@ -240,8 +239,8 @@ abstract class TreeModel extends \Eloquent
         try {
             if ($parent && $parent->exists) {
                 $lr = $parent->tree_getLeftAndRight();
-                $lefts = DB::table($this->table)->where($this->left, '>', max($lr))->addBinding($this->preQuery->getBindings())->increment($this->left, 2);
-                $rights = DB::table($this->table)->where($this->right, '>=', max($lr))->addBinding($this->preQuery->getBindings())->increment($this->right, 2);
+                $lefts = DB::table($this->table)->where($this->left, '>', max($lr))->addNestedWhereQuery($this->preQuery->getQuery())->increment($this->left, 2);
+                $rights = DB::table($this->table)->where($this->right, '>=', max($lr))->addNestedWhereQuery($this->preQuery->getQuery())->increment($this->right, 2);
                 if($lefts || $rights) {
                     $this->{$this->left} = max($lr);
                     $this->{$this->right} = max($lr) + 1;
@@ -279,8 +278,8 @@ abstract class TreeModel extends \Eloquent
             DB::beginTransaction();
             try {
                 $lr = $this->tree_getLeftAndRight();
-                $lefts = DB::table($this->table)->where($this->left, '>', max($lr))->addBinding($this->preQuery->getBindings())->increment($this->left, 2);
-                $rights = DB::table($this->table)->where($this->right, '>=', max($lr))->addBinding($this->preQuery->getBindings())->increment($this->right, 2);
+                $lefts = DB::table($this->table)->where($this->left, '>', max($lr))->addNestedWhereQuery($this->preQuery->getQuery())->increment($this->left, 2);
+                $rights = DB::table($this->table)->where($this->right, '>=', max($lr))->addNestedWhereQuery($this->preQuery->getQuery())->increment($this->right, 2);
 
                 if($lefts || $rights) {
                     $model->{$this->left} = max($lr);
@@ -311,7 +310,7 @@ abstract class TreeModel extends \Eloquent
         $len = DB::table($this->table)
             ->where($this->left, '>=', min($lr))
             ->where($this->right, '<=', max($lr))
-            ->addBinding($this->preQuery->getBindings())
+            ->addNestedWhereQuery($this->preQuery->getQuery())
             ->delete();
         return $len;
     }
@@ -327,7 +326,7 @@ abstract class TreeModel extends \Eloquent
         $len = DB::table($this->table)
             ->where($this->left, '>', min($lr))
             ->where($this->right, '<', max($lr))
-            ->addBinding($this->preQuery->getBindings())
+            ->addNestedWhereQuery($this->preQuery->getQuery())
             ->delete();
         return $len;
     }
@@ -351,21 +350,21 @@ abstract class TreeModel extends \Eloquent
             $models = DB::table($this->table)->select(['id'=>$this->primaryKey])
                 ->where($this->left, '>=', min($lr))
                 ->where($this->right, '<=', max($lr))
-                ->addBinding($this->preQuery->getBindings())
+                ->addNestedWhereQuery($this->preQuery->getQuery())
                 ->get();
             $ids = array_pluck($models, 'id');
 
             /** @var array $leftmodels 要更新左值的行主键（未去除要移动的行主键）*/
             $leftmodels = DB::table($this->table)->select(['id'=>$this->primaryKey])
                 ->where($this->left, '>', max($plr))
-                ->addBinding($this->preQuery->getBindings())
+                ->addNestedWhereQuery($this->preQuery->getQuery())
                 ->get();
             $leftIds = array_pluck($leftmodels, 'id');
 
             /** @var array $rightmodels 要更新右值的行主键（未去除要移动的行主键）*/
             $rightmodels = DB::table($this->table)->select(['id'=>$this->primaryKey])
                 ->where($this->right, '>=', max($plr))
-                ->addBinding($this->preQuery->getBindings())
+                ->addNestedWhereQuery($this->preQuery->getQuery())
                 ->get();
             $rightIds = array_pluck($rightmodels, 'id');
 
@@ -480,8 +479,8 @@ abstract class TreeModel extends \Eloquent
         $models = $this
             ->where($this->left, '>', min($lr)-1)
             ->where($this->right, '<', max($lr)+1)
-            ->addBinding($this->preQuery->getBindings())
-            ->addBinding($this->query->getBindings())
+            ->addNestedWhereQuery($this->preQuery->getQuery())
+            ->addNestedWhereQuery($this->query->getQuery())
             ->orderBy($this->left)
             ->get();
 
@@ -489,6 +488,8 @@ abstract class TreeModel extends \Eloquent
         foreach ($models as $node) {
             /**  @var $node $this */
             if (! $node->tree_directlyParent()) {
+                $node->query = $this->query;
+                $node->preQuery = $this->preQuery;
                 $directlyChildren[] = $node;
             }
         }
@@ -507,7 +508,7 @@ abstract class TreeModel extends \Eloquent
         $parent = $this
             ->where($this->left, '<', min($lr))
             ->where($this->right, '>', max($lr))
-            ->addBinding($this->preQuery->getBindings())
+            ->addNestedWhereQuery($this->preQuery->getQuery())
             ->orderBy($this->left, 'desc')
             ->first();
         return $parent ? $parent : null;
@@ -550,13 +551,15 @@ abstract class TreeModel extends \Eloquent
         $models = $this
             ->where($this->left, '>', min($lr))
             ->where($this->right, '<', max($lr))
-            ->addBinding($this->preQuery->getBindings())
-            ->addBinding($this->query->getBindings())
+            ->addNestedWhereQuery($this->preQuery->getQuery())
+            ->addNestedWhereQuery($this->query->getQuery())
             ->orderBy($this->left)
             ->get();
         foreach ($models as $node) {
             /**  @var $node $this */
             if ($node->tree_isDirectlyParent($this)) {
+                $node->query = $this->query;
+                $node->preQuery = $this->preQuery;
                 $directlyChildren[] = $node;
             }
         }
@@ -668,7 +671,7 @@ abstract class TreeModel extends \Eloquent
         $len = DB::table($this->table)
             ->where($this->left,'<', min($lr))
             ->where($this->right,'>', max($lr))
-            ->addBinding($this->preQuery->getBindings())
+            ->addNestedWhereQuery($this->preQuery->getQuery())
             ->count();
         return ! $len ? true : false;
     }
@@ -684,8 +687,8 @@ abstract class TreeModel extends \Eloquent
         $len = DB::table($this->table)
             ->where($this->left,'>', min($lr))
             ->where($this->right,'<', max($lr))
-            ->addBinding($this->preQuery->getBindings())
-            ->addBinding($this->query->getBindings())
+            ->addNestedWhereQuery($this->preQuery->getQuery())
+            ->addNestedWhereQuery($this->query->getQuery())
             ->count();
         return $len;
     }

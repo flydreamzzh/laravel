@@ -34,9 +34,9 @@ class DemoController extends Controller
 
     public function test2()
     {
-        $menu = Menu::find(18);
-        $menu1 = Menu::find(18);
 //        var_dump($menu->tree_array($menu->tree_list()));
-        var_dump($menu->tree_array($menu->tree_children()));
+        var_dump(Menu::tree_array((new Menu)->tree_where(function ($query) {
+            $query->where(['type' => 0]);
+        })->tree_list()));
     }
 }
