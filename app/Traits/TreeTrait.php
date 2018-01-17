@@ -451,21 +451,55 @@ trait TreeTrait
     {
         $lr = $this->tree_getLeftAndRight($model);
         if ($exchangeModel) {
-            /** @var Eloquent $modelCur */
-            $modelCur = $model ? $model->tree() : $this;
             DB::beginTransaction();
             DB::table($this->table)->lockForUpdate()->get();
             try {
+                /** @var $exchangeModel $this */
                 $rlr = $exchangeModel->tree()->tree_getLeftAndRight();
-                $modelCur->{$this->left} = min($rlr);
-                $modelCur->{$this->right} = max($rlr);
-                if($modelCur->update()) {
-                    $exchangeModel->{$this->left} = min($lr);
-                    $exchangeModel->{$this->right} = max($lr);
-                    if ($exchangeModel->update()) {
-                        DB::commit();
-                        return true;
-                    }
+
+                /** @var array $models 互换的节点（一） */
+                $models = DB::table($this->table)->select(['id'=>$this->primaryKey])
+                    ->where($this->left, '>=', min($lr))
+                    ->where($this->right, '<=', max($lr))
+                    ->get();
+                $ids = array_pluck($models, 'id');
+
+                /** @var array $midModels 中间的节点） */
+                $midRL = max($lr) < max($rlr) ? [max($lr) + 1, min($rlr) - 1] : [max($rlr) + 1, min($lr) - 1];
+                $midModels = DB::table($this->table)->select(['id'=>$this->primaryKey])
+                    ->where($this->left, '>=', min($midRL))
+                    ->where($this->right, '<=', max($midRL))
+                    ->get();
+                $midIds = array_pluck($midModels, 'id');
+
+                /** @var array $exModels 互换的节点（二） */
+                $exModels = DB::table($this->table)->select(['id'=>$this->primaryKey])
+                    ->where($this->left, '>=', min($rlr))
+                    ->where($this->right, '<=', max($rlr))
+                    ->get();
+                $exIds = array_pluck($exModels, 'id');
+
+                $len = max($rlr)-max($lr);
+                $updateOne = DB::table($this->table)->whereIn($this->primaryKey, $ids)->update([
+                    $this->left => DB::raw("$this->left + $len"),
+                    $this->right => DB::raw("$this->right + $len"),
+                ]);
+
+                $mlen = (max($rlr)-min($rlr)) - (max($lr)-min($lr));
+                $updateMiddle = DB::table($this->table)->whereIn($this->primaryKey, $midIds)->update([
+                    $this->left => DB::raw("$this->left + $mlen"),
+                    $this->right => DB::raw("$this->right + $mlen"),
+                ]);
+
+                $rlen = min($lr) - min($rlr);
+                $updateTwo = DB::table($this->table)->whereIn($this->primaryKey, $exIds)->update([
+                    $this->left => DB::raw("$this->left + $rlen"),
+                    $this->right => DB::raw("$this->right + $rlen"),
+                ]);
+
+                if($updateOne == count($ids) && $updateMiddle == count($midIds) && $updateTwo == count($exIds)) {
+                    DB::commit();
+                    return true;
                 }
                 DB::rollBack();
                 return false;
