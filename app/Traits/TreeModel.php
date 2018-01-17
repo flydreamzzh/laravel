@@ -199,15 +199,27 @@ abstract class TreeModel extends \Eloquent
         $mlr = $this->tree_getMinLeftAndMaxRight();
         $right = ! $mlr ? $this->minLeft : max($mlr) + 1;
         if (! $this->exists) {
-            $this->{$this->left} = $right;
-            $this->{$this->right} = $right + 1;
-            if ($this->save()) {
-                return true;
+            DB::beginTransaction();
+            DB::table($this->table)->lockForUpdate()->get();
+            try {
+                $this->{$this->left} = $right;
+                $this->{$this->right} = $right + 1;
+                if ($this->save()) {
+                    DB::commit();
+                    return true;
+                }
+                DB::rollBack();
+                return false;
+            } catch (Exception $e) {
+                DB::rollBack();
+                return false;
             }
+
         } else {
             if ($this->tree_isTopNode())
                 return true;
             DB::beginTransaction();
+            DB::table($this->table)->lockForUpdate()->get();
             try {
                 $lr = $this->tree_getLeftAndRight();
                 $dif = $mlr[1] - $lr[0] + 1;
@@ -236,6 +248,7 @@ abstract class TreeModel extends \Eloquent
     public function tree_addNode($parent = null)
     {
         DB::beginTransaction();
+        DB::table($this->table)->lockForUpdate()->get();
         try {
             if ($parent && $parent->exists) {
                 $lr = $parent->tree_getLeftAndRight();
@@ -276,6 +289,7 @@ abstract class TreeModel extends \Eloquent
     {
         if (! $model->exists) {
             DB::beginTransaction();
+            DB::table($this->table)->lockForUpdate()->get();
             try {
                 $lr = $this->tree_getLeftAndRight();
                 $lefts = DB::table($this->table)->where($this->left, '>', max($lr))->addNestedWhereQuery($this->preQuery->getQuery())->increment($this->left, 2);
@@ -341,6 +355,7 @@ abstract class TreeModel extends \Eloquent
         if ($this->tree_isDirectlyParent($parent))
             return false;
         DB::beginTransaction();
+        DB::table($this->table)->lockForUpdate()->get();
         try {
             $lr = $this->tree_getLeftAndRight();
             $plr = $this->tree_getLeftAndRight($parent);
@@ -443,6 +458,7 @@ abstract class TreeModel extends \Eloquent
             /** @var Eloquent $modelCur */
             $modelCur = $model ? $model : $this;
             DB::beginTransaction();
+            DB::table($this->table)->lockForUpdate()->get();
             try {
                 /** @var $exchangeModel $this */
                 $rlr = $exchangeModel->tree_getLeftAndRight();
