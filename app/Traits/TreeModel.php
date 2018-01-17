@@ -338,7 +338,7 @@ abstract class TreeModel extends \Eloquent
      */
     public function tree_moveNode($parent)
     {
-        if ($this->tree_isBeInclude($parent))
+        if ($this->tree_isDirectlyParent($parent))
             return false;
         DB::beginTransaction();
         try {
