@@ -181,7 +181,7 @@ trait TreeTrait
         if(is_numeric($left) && is_numeric($right)) {
             return [(int)$left, (int)$right];
         } else {
-            return null;
+            return [-1, 0];//左右值从1开始
         }
     }
 
@@ -247,7 +247,7 @@ trait TreeTrait
         DB::table($this->table)->lockForUpdate()->get();
         try {
             if ($parent && $parent->exists) {
-                $lr = $parent->tree_getLeftAndRight();
+                $lr = $parent->tree()->tree_getLeftAndRight();
                 $lefts = DB::table($this->table)->where($this->left, '>', max($lr))->addNestedWhereQuery($this->preQuery->getQuery())->increment($this->left, 2);
                 $rights = DB::table($this->table)->where($this->right, '>=', max($lr))->addNestedWhereQuery($this->preQuery->getQuery())->increment($this->right, 2);
                 if($lefts || $rights) {
@@ -260,8 +260,8 @@ trait TreeTrait
                 }
             } else {
                 $lr = $this->tree_getMinLeftAndMaxRight();
-                $this->{$this->left} = max($lr);
-                $this->{$this->right} = max($lr) + 1;
+                $this->{$this->left} = max($lr) + 1;
+                $this->{$this->right} = max($lr) + 2;
                 if ($this->save()) {
                     DB::commit();
                     return true;

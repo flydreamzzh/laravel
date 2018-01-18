@@ -14,7 +14,7 @@ $menuUl = [];
         @else
             @if(! $menu->tree_children)
                 <li class="{{ $currentRoute == $menu->url ? 'active' : '' }}">
-                    <a href="{{ route($menu->url) }}">
+                    <a href="{{ Route::has($menu->url) ? route($menu->url) : '#' }}">
                         <span class="{{ $menu->icon }}"></span>
                         <span class="sidebar-title">{{ $menu->name }}</span>
                     </a>
@@ -31,7 +31,7 @@ $menuUl = [];
                             @if(! $children->tree_children)
                                 <li class="{{ $currentRoute == $children->url ? 'active' : '' }}">
                                     @php($currentRoute == $children->url ? $menuUl[] = $menu->id : '')
-                                    <a href="{{ route($children->url) }}">
+                                    <a href="{{ Route::has($children->url) ? route($children->url) : '#' }}">
                                         <span class="{{ $children->icon }}"></span> {{ $children->name }}
                                     </a>
                                 </li>
@@ -45,7 +45,7 @@ $menuUl = [];
                                         @foreach($children->tree_children as $child)
                                             <li class="{{ $currentRoute == $child->url ? 'active' : '' }}">
                                                 @php($currentRoute == $child->url ? $menuUl[] = $children->id : '')
-                                                <a href="{{ route($child->url) }}"><span class="{{ $child->icon }}"></span> {{ $child->name }}</a>
+                                                <a href="{{ Route::has($child->url) ? route($child->url) : '#' }}"><span class="{{ $child->icon }}"></span> {{ $child->name }}</a>
                                             </li>
                                         @endforeach
                                     </ul>

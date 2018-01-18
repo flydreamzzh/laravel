@@ -185,7 +185,7 @@ abstract class TreeModel extends \Eloquent
         if(is_numeric($left) && is_numeric($right)) {
             return [(int)$left, (int)$right];
         } else {
-            return null;
+            return [-1, 0];//左右值从1开始
         }
     }
 
@@ -264,8 +264,8 @@ abstract class TreeModel extends \Eloquent
                 }
             } else {
                 $lr = $this->tree_getMinLeftAndMaxRight();
-                $this->{$this->left} = max($lr);
-                $this->{$this->right} = max($lr) + 1;
+                $this->{$this->left} = max($lr)+1;
+                $this->{$this->right} = max($lr) + 2;
                 if ($this->save()) {
                     DB::commit();
                     return true;
