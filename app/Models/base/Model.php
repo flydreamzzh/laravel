@@ -18,7 +18,7 @@ abstract class Model extends Eloquent
     /**
      * 返回路由的名称
      * Example：Route::resource('menus', 'MenuController'); 中的menus
-     * return ['menus'];
+     * return 'menus';
      * @return string
      */
     abstract public function route();

@@ -29,6 +29,17 @@ Route::get('/menus/table', 'MenuController@table')->name('menus.table');
 Route::get('/menus/parentList', 'MenuController@parentList')->name('menus.parentList');
 Route::post('/menus/up', 'MenuController@moveUp')->name('menus.moveUp');
 Route::post('/menus/down', 'MenuController@moveDown')->name('menus.moveDown');
-Route::get('/demo', 'DemoController@index');
-
 Route::resource('menus', 'MenuController');
+
+/**
+ * -------------- USERS -----------------
+ */
+Route::get('/users/table', 'UserController@table')->name('users.table');
+Route::resource('users', 'UserController');
+
+
+/**
+ * -------------- ROLES -----------------
+ */
+Route::get('/authRoles/table', 'AuthRoleController@table')->name('authRoles.table');
+Route::resource('authRoles', 'AuthRoleController');

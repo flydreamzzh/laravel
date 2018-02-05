@@ -1,0 +1,34 @@
+@charset "UTF-8";
+
+.role-search{
+    margin: 8px 10px;
+    width: auto;
+    padding: 0 12px;
+    height: 24px;
+    border: 1px solid silver;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    border-radius: 12px;
+
+}
+
+.role-search input {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+
+#treeTable{
+    width: 100%;
+    outline: none;
+}
+
+#treeTable > ul {
+    border: none;
+    outline: none;
+}
+
+#treeTable > ul li {
+    overflow: hidden;
+}
