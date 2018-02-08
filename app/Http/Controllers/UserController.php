@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\User;
 use App\Repositories\UserRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Support\Facades\Input;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 
@@ -39,9 +41,9 @@ class UserController extends AppBaseController
 
     public function table(Request $request)
     {
-        $this->userRepository->pushCriteria(new RequestCriteria($request));
+//        $users = $this->userRepository->pushCriteria(new RequestCriteria($request))->all();
 
-        $users = $this->userRepository->paginate($request->get('limit'))->toArray();
+        $users = $this->userRepository->search($request->all())->toArray();
 
         return json_encode(array_merge($users, [ 'count' => $users['total'], 'code' => 0]), true);
     }

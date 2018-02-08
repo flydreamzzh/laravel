@@ -47,7 +47,7 @@
                     });
                 } else if (layEvent === 'edit') {
                     $.get(data.edit_url, function (response) {
-                        window.menuObj = obj;
+                        window.userObj = obj;
                         layer.open({
                             type: 1,
                             id: 'update',

@@ -4,7 +4,7 @@
     <div class="layui-input-block" id="__react-content">
         <!-- 插件内容 -->
     </div>
-    {{ Form::hidden('parent', null, ['id' => "treeSelectValue"]) }}
+    {{ Form::hidden('parent', null, ['placeholder' => '上级节点，不选为顶级节点', 'id' => "treeSelectValue"]) }}
 </div>
 
 <!-- Type Field -->

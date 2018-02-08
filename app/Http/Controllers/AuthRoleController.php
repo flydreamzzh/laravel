@@ -6,9 +6,7 @@ use App\Http\Requests\CreateAuthRoleRequest;
 use App\Http\Requests\UpdateAuthRoleRequest;
 use App\Models\AuthRole;
 use App\Repositories\AuthRoleRepository;
-use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
-use Flash;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 
@@ -41,8 +39,20 @@ class AuthRoleController extends AppBaseController
     {
         $roles = AuthRole::tree_array((new AuthRole())->tree_list());
 
+        $roles = array_merge([
+            ['id' => 'ALL', 'label' => '全部用户', 'title' => '<span class="text-info">全部用户</span>', 'active' => true],
+            ['id' => 'NONE', 'label' => '暂无角色', 'title' => '<span class="text-warning">暂无角色</span>'],
+        ], $roles);
         return json_encode($roles, true);
     }
+
+    public function lists()
+    {
+        $roles = AuthRole::tree_array((new AuthRole())->tree_list());
+        return json_encode($roles, true);
+    }
+
+
 
     /**
      * Show the form for creating a new AuthRole.

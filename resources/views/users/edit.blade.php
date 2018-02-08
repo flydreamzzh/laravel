@@ -11,7 +11,7 @@
         form.on('submit(submit)', function(data){
             $.post(data.form.action, data.field, function (response) {
                 if (response.success) {
-                    window.menuObj.update(response.data);
+                    window.userObj.update(response.data);
                     layer.closeAll();
                     layer.msg(response.message, {icon: 1});
                 } else {

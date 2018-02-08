@@ -4594,12 +4594,14 @@ var treeData = function () {
     return data;
 }();
 
+var placeHolder = $("#treeSelectValue").attr('placeholder');
+
 /**
  * @param treeValue 初始化值
  * @param treeLabel 初始化label
  */
 var treeValue = $("#treeSelectValue").val();
-var valueObj = { value: 'null', label: '上级节点，不选为顶级节点' };
+var valueObj = { value: 'null', label: placeHolder };
 if (treeValue) {
     var treeLabel = findPath(treeValue, treeData).map(function (i) {
         return i.label;
@@ -4700,7 +4702,7 @@ var Demo = function (_React$Component) {
                 transitionName: 'rc-tree-select-dropdown-slide-up',
                 choiceTransitionName: 'rc-tree-select-selection__choice-zoom',
                 dropdownStyle: { maxHeight: 200, overflow: 'auto', zIndex: 1500 },
-                placeholder: _react2.default.createElement('i', null, '上级节点，不选为顶级节点'),
+                placeholder: _react2.default.createElement('i', null, placeHolder),
                 searchPlaceholder: 'please search',
                 showSearch: true, allowClear: true, treeLine: true,
                 value: this.state.lv, labelInValue: true,

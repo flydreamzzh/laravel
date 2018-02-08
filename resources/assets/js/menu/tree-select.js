@@ -87,12 +87,14 @@ var treeData = (function () {
     return data;
 })();
 
+var placeHolder = $("#treeSelectValue").attr('placeholder');
+
 /**
  * @param treeValue 初始化值
  * @param treeLabel 初始化label
  */
 var treeValue = $("#treeSelectValue").val();
-var valueObj = { value: 'null', label: '上级节点，不选为顶级节点' };
+var valueObj = { value: 'null', label: placeHolder };
 if (treeValue) {
     var treeLabel = findPath(treeValue, treeData).map(function (i) { return i.label; }).reverse().join(' > ');
     valueObj = { value: treeValue, label: treeLabel };
@@ -194,7 +196,7 @@ var Demo = function (_React$Component) {
                 placeholder: _react2.default.createElement(
                     'i',
                     null,
-                    '上级节点，不选为顶级节点'
+                    placeHolder
                 ),
                 searchPlaceholder: 'please search',
                 showSearch: true, allowClear: true, treeLine: true,

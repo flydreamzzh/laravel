@@ -29,7 +29,21 @@
                 nodata: false,      // Display a 'no data' status node if result is empty
                 mode: "hide"       // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
             },
-            icon: false
+            icon: false,
+            click: function(event, data) {
+                console.log(data);
+                layui.use('table', function () {
+                    var table = layui.table;
+                    table.reload('users', {
+                        where: { //设定异步数据接口的额外参数，任意设
+                            role_id: data.node.data.id
+                        }
+                        ,page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                    });
+                })
+            }
         });
 
         $("#searchMenu").keyup(function (e) {

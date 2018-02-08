@@ -18,11 +18,11 @@ class User extends Model
 {
 
     public $table = 'users';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-
+    protected $appends = ['role_id', 'edit_url', 'show_url', 'store_url', 'update_url', 'delete_url'];
 
     public $fillable = [
         'name',
@@ -64,5 +64,10 @@ class User extends Model
     {
         return 'users';
         // TODO: Implement route() method.
+    }
+
+    public function getRoleIdAttribute()
+    {
+        return '';
     }
 }

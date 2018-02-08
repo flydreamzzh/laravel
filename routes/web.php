@@ -42,4 +42,5 @@ Route::resource('users', 'UserController');
  * -------------- ROLES -----------------
  */
 Route::get('/authRoles/table', 'AuthRoleController@table')->name('authRoles.table');
+Route::get('/authRoles/lists', 'AuthRoleController@lists')->name('authRoles.lists');
 Route::resource('authRoles', 'AuthRoleController');
