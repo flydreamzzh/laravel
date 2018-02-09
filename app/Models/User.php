@@ -9,6 +9,7 @@ use App\Models\base\Model;
  * @package App\Models
  * @version January 18, 2018, 9:33 am UTC
  *
+ * @property integer id
  * @property string name
  * @property string email
  * @property string password
@@ -53,6 +54,25 @@ class User extends Model
         
     ];
 
+    /**
+     * 配置用户角色
+     * @param string $role_id
+     * @return bool|null
+     */
+    public function setRole($role_id)
+    {
+        if (AuthRole::findOrFail($role_id)) {
+            $userRole = UserRole::firstOrNew(['user_id' => $this->id]);
+            $userRole->fill(['role_id' => $role_id]);
+            return $userRole->save();
+        } else {
+            if (UserRole::findOrFail(['user_id' => $this->id])) {
+                return UserRole::where(['user_id' => $this->id])->delete();
+            }
+            return true;
+        }
+    }
+
 
     /**
      * 返回路由的名称
@@ -68,6 +88,7 @@ class User extends Model
 
     public function getRoleIdAttribute()
     {
-        return '';
+        $model = UserRole::where('user_id', '=', $this->id)->first();
+        return $model ? $model->role_id : null;
     }
 }

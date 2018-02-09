@@ -2,7 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Models\AuthRole;
 use App\Models\User;
+use App\Models\UserRole;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use InfyOm\Generator\Common\BaseRepository;
@@ -44,7 +46,7 @@ class UserRepository extends BaseRepository
     {
         $model = new User();
         $model->fill($params);
-        $query =  $this->model;
+        $query =  $this->model->select(['users.*']);
         if (isset($params['role_id']) && $params['role_id'] !== 'ALL') {
             if ($params['role_id'] == 'NONE') {
                 $query = $query->whereNotExists(function (Builder $query) {

@@ -19,6 +19,8 @@
                 }
             }).fail(function (data) {
                 layer.msg(data.responseJSON.message, {icon: 5});
+            }).done(function () {
+                table.reload('users')
             });
             return false;
         });

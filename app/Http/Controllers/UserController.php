@@ -6,10 +6,8 @@ use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Repositories\UserRepository;
-use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
-use Flash;
-use Illuminate\Support\Facades\Input;
+use Exception;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 
@@ -125,10 +123,22 @@ class UserController extends AppBaseController
         if (empty($user)) {
             return $this->sendError('用户不存在！');
         }
-
-        $user = $this->userRepository->update($request->all(), $id);
-
-        return $this->sendResponse($user->toArray(), '用户更新成功');
+        \DB::beginTransaction();
+        try {
+            $user = $this->userRepository->update($request->all(), $id);
+            if ($user && $request->get('role_id')) {
+                if (! $user->setRole($request->get('role_id'))) {
+                    \DB::rollBack();
+                    return $this->sendError('用户配置角色出错！');
+                }
+                \DB::commit();
+                return $this->sendResponse($user->toArray(), '用户更新成功');
+            }
+            return $this->sendError('用户更新失败！');
+        } catch (Exception $e) {
+            \DB::rollBack();
+            return $this->sendError('用户更新失败！');
+        }
     }
 
     /**

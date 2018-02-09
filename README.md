@@ -16,6 +16,7 @@ php artisan infyom:migration $MODEL_NAME$
 
 模型生成器
 php artisan infyom:model $MODEL_NAME$
+php artisan infyom:model $MODEL_NAME$ --fromTable --tableName=$TABLE_NAME$
 
 Repository生成器
 php artisan infyom:repository $MODEL_NAME$

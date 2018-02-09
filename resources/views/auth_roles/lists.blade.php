@@ -31,7 +31,6 @@
             },
             icon: false,
             click: function(event, data) {
-                console.log(data);
                 layui.use('table', function () {
                     var table = layui.table;
                     table.reload('users', {
