@@ -34,4 +34,16 @@ class AuthPermissionRepository extends BaseRepository
     {
         return AuthPermission::class;
     }
+
+    /**
+     * @param array $params
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function search($params = [])
+    {
+        $model = new AuthPermission();
+        $model->fill($params);
+        $data = $this->model->where('menu_id', $model->menu_id)->paginate($params['limit']);
+        return $data;
+    }
 }

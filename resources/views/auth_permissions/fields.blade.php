@@ -1,35 +1,53 @@
 <!-- Name Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('name', 'Name:') !!}
-    {!! Form::text('name', null, ['class' => 'form-control']) !!}
+<div class="layui-form-item">
+    {!! Form::label('name', '名称', ['class' => 'layui-form-label']) !!}
+    <div class="layui-input-block">
+        {{ Form::text('name', null, ['required', 'lay-verify' => 'required', 'placeholder' => '请输入权限名称', 'class' => 'layui-input']) }}
+    </div>
 </div>
 
 <!-- Route Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('route', 'Route:') !!}
-    {!! Form::text('route', null, ['class' => 'form-control']) !!}
-</div>
-
-<!-- Status Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('status', 'Status:') !!}
-    {!! Form::number('status', null, ['class' => 'form-control']) !!}
-</div>
-
-<!-- Menu Id Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('menu_id', 'Menu Id:') !!}
-    {!! Form::text('menu_id', null, ['class' => 'form-control']) !!}
+<div class="layui-form-item">
+    {!! Form::label('route', '路由', ['class' => 'layui-form-label']) !!}
+    <div class="layui-input-block">
+        {{ Form::text('route', null, ['required', 'lay-verify' => 'required', 'placeholder' => '请输入路由，如：menus.index', 'class' => 'layui-input']) }}
+    </div>
 </div>
 
 <!-- Description Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('description', 'Description:') !!}
-    {!! Form::text('description', null, ['class' => 'form-control']) !!}
+<div class="layui-form-item">
+    {!! Form::label('description', '描述', ['class' => 'layui-form-label']) !!}
+    <div class="layui-input-block">
+        {{ Form::textarea('description', null, ['rows' => 3, 'placeholder' => '请简单描述此权限（可不填）', 'class' => 'layui-textarea']) }}
+    </div>
 </div>
 
-<!-- Submit Field -->
-<div class="form-group col-sm-12">
-    {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
-    <a href="{!! route('authPermissions.index') !!}" class="btn btn-default">Cancel</a>
+<!-- Status Field -->
+<div class="layui-form-item">
+    {!! Form::label('status', '状态', ['class' => 'layui-form-label']) !!}
+    <div class="layui-input-block">
+    {!! Form::checkbox('status', 0, true, ['lay-skin' => "switch", 'lay-filter' => 'setStatus', 'lay-text' => "启用|禁用", ]) !!}
+    {!! Form::hidden('status_close', 1, ['id' => "switch_status"]) !!}
+    </div>
 </div>
+
+<!-- Menu Id Field -->
+{!! Form::hidden('menu_id', $menu_id) !!}
+
+<!-- Submit Field -->
+<div class="layui-form-item">
+    <div class="layui-input-block">
+        {{ Form::submit('立即提交', ['lay-submit', 'lay-filter' => 'submit', 'class' => 'layui-btn']) }}
+        {{ Form::reset('重置', ['class' => 'layui-btn layui-btn-primary']) }}
+    </div>
+</div>
+
+<script>
+    layui.use('form', function(){
+        var form = layui.form;
+        //监听性别操作
+        form.on('switch(setStatus)', function(obj){
+            $("#switch_status").attr('name', obj.elem.checked ? 'status_close' : 'status');
+        });
+    });
+</script>

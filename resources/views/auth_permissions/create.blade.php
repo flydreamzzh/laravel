@@ -1,24 +1,28 @@
-@extends('layouts.app')
+{!! Form::model($authPermission, ['route' => 'authPermissions.store', 'class' => 'layui-form', 'style' => 'padding: 10px 30px 10px 10px']) !!}
 
-@section('content')
-    <section class="content-header">
-        <h1>
-            Auth Permission
-        </h1>
-    </section>
-    <div class="content">
-        @include('adminlte-templates::common.errors')
-        <div class="box box-primary">
+@include('auth_permissions.fields')
 
-            <div class="box-body">
-                <div class="row">
-                    {!! Form::open(['route' => 'authPermissions.store']) !!}
+{!! Form::close() !!}
 
-                        @include('auth_permissions.fields')
 
-                    {!! Form::close() !!}
-                </div>
-            </div>
-        </div>
-    </div>
-@endsection
+<script type="text/javascript">
+    layui.use(['form', 'table'], function() {
+        var form = layui.form, table = layui.table;
+        form.render();
+        form.on('submit(submit)', function(data){
+            $.post(data.form.action, data.field, function (response) {
+                if (response.success) {
+                    layer.close(layer.index);
+                    table.reload('permissions');
+                    layer.msg(response.message, {icon: 1});
+                } else {
+                    layer.msg(response.message, {icon: 2});
+                }
+            }).fail(function (response) {
+                var message = response.responseJSON.message;
+                layer.msg(message, {icon: 5});
+            });
+            return false;
+        });
+    })
+</script>

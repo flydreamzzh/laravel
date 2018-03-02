@@ -21,8 +21,8 @@
     <link rel="shortcut icon" href="{{ asset("assets/img/favicon.ico") }}">
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('layui/css/layui.css') }}"  media="all">
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
     <!-- jQuery -->
     <script type="text/javascript" src="{{ asset("vendor/jquery/jquery-1.11.1.min.js") }}"></script>

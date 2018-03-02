@@ -11,6 +11,8 @@
     <input type="button" disabled class="btn btn-sm btn-danger" value="删除">
 </div>
 
+<input type="hidden" id="pMenu" value="{{ $menu_id }}">
+
 <script type="text/html" id="permission">
     <!-- 这里的 checked 的状态只是演示 -->
     <a href="javascript:void(0)" class="text-info" onclick="updatePermission('@{{ d.id }}')">@{{ d.name }}</a>
@@ -27,7 +29,7 @@
         var table = layui.table;
         table.render({
             elem: '#permissions',
-            url: '{{ route("authPermissions.permissions") }}',
+            url: '{{ route("authPermissions.permissions", ['menu_id' => $menu_id]) }}',
             cols: [[
                 {type: 'checkbox'},
                 {field:'name', title:'名称', width:120, templet: '#permission'},
@@ -55,6 +57,22 @@
 
     function updatePermission(permission_id) {
         alert(permission_id)
+    }
+    
+    function addPermission() {
+        var menu_id = $("#pMenu").val();
+        $.get("{{ route('authPermissions.create') }}", {menu: menu_id}, function (response) {
+            layui.use([], function () {
+                var layer = layui.layer;
+                layer.open({
+                    type: 1,
+                    title: "创建权限",
+                    area: ['600px', 'auto'],
+                    maxmin: true,
+                    content: response
+                });
+            })
+        })
     }
 
 </script>

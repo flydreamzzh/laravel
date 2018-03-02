@@ -30,7 +30,7 @@
     });
 
     function editPermission(menu_id, title) {
-        $.get("{{ route("authPermissions.menuPermissions") }}", {}, function (response) {
+        $.get("{{ route("authPermissions.menuPermissions") }}", {menu: menu_id}, function (response) {
             layui.use([],function () {
                 var  layer = layui.layer;
                 layer.open({

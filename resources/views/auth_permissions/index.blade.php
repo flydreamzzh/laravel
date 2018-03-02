@@ -21,12 +21,6 @@
 @endsection
 
 @section('js')
-    <script>
-        layui.use(['element', 'layer'], function(){
-            var element = layui.element;
-            var layer = layui.layer;
-        });
-    </script>
     @yield('roleJS')
     @yield('userJS')
 @endsection

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAuthPermissionRequest;
 use App\Http\Requests\UpdateAuthPermissionRequest;
+use App\Models\AuthPermission;
 use App\Repositories\AuthPermissionRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
@@ -29,33 +30,51 @@ class AuthPermissionController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $this->authPermissionRepository->pushCriteria(new RequestCriteria($request));
-        $authPermissions = $this->authPermissionRepository->all();
-
-        return view('auth_permissions.index')
-            ->with('authPermissions', $authPermissions);
+        return view('auth_permissions.index');
     }
 
+    /**
+     * 某节点的权限配置界面
+     * @param Request $request
+     * @return $this|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function menuPermissions(Request $request)
     {
-        return view('auth_permissions.menu_permissions');
+        if ($menu_id = $request->get('menu')) {
+            return view('auth_permissions.menu_permissions')->with('menu_id', $menu_id);
+        } else {
+            return view('global.params_lost');
+        }
     }
 
+    /**
+     * 某节点的所有权限
+     * @param Request $request
+     * @return string
+     */
     public function permissions(Request $request)
     {
         $this->authPermissionRepository->pushCriteria(new RequestCriteria($request));
-        $authPermissions = $this->authPermissionRepository->paginate($request->get('limit'))->toArray();
+        $authPermissions = $this->authPermissionRepository->search($request->all())->toArray();
         return json_encode(array_merge($authPermissions, [ 'count' => $authPermissions['total'], 'code' => 0]), true);
     }
 
     /**
      * Show the form for creating a new AuthPermission.
      *
+     * @param Request $request
      * @return Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        return view('auth_permissions.create');
+        if ($menu_id = $request->get('menu')) {
+            $authPermission = new AuthPermission();
+            return view('auth_permissions.create')
+                ->with('authPermission', $authPermission)
+                ->with('menu_id', $menu_id);
+        } else {
+            return view('global.params_lost');
+        }
     }
 
     /**
@@ -69,11 +88,10 @@ class AuthPermissionController extends AppBaseController
     {
         $input = $request->all();
 
-        $authPermission = $this->authPermissionRepository->create($input);
-
-        Flash::success('Auth Permission saved successfully.');
-
-        return redirect(route('authPermissions.index'));
+        if ( $authPermission = $this->authPermissionRepository->create($input)) {
+            return $this->sendResponse($authPermission->toArray(), '权限添加成功！');
+        }
+        return $this->sendError('权限添加失败！');
     }
 
     /**
