@@ -38,11 +38,12 @@ class AuthRoleController extends AppBaseController
     public function table(Request $request)
     {
         $roles = AuthRole::tree_array((new AuthRole())->tree_list());
-
-        $roles = array_merge([
-            ['id' => 'ALL', 'label' => '全部用户', 'title' => '<span class="text-info">全部用户</span>', 'active' => true],
-            ['id' => 'NONE', 'label' => '暂无角色', 'title' => '<span class="text-warning">暂无角色</span>'],
-        ], $roles);
+        if (! $request->get('is_permission')) {
+            $roles = array_merge([
+                ['id' => 'ALL', 'label' => '全部用户', 'title' => '<span class="text-info">全部用户</span>', 'active' => true],
+                ['id' => 'NONE', 'label' => '暂无角色', 'title' => '<span class="text-warning">暂无角色</span>'],
+            ], $roles);
+        }
         return json_encode($roles, true);
     }
 

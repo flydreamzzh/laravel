@@ -44,3 +44,10 @@ Route::resource('users', 'UserController');
 Route::get('/authRoles/table', 'AuthRoleController@table')->name('authRoles.table');
 Route::get('/authRoles/lists', 'AuthRoleController@lists')->name('authRoles.lists');
 Route::resource('authRoles', 'AuthRoleController');
+
+/**
+ * -------------- PERMISSION -----------------
+ */
+Route::get('/permissions/permissions', 'AuthPermissionController@permissions')->name('authPermissions.permissions');
+Route::get('/authPermissions/menuPermissions', 'AuthPermissionController@menuPermissions')->name('authPermissions.menuPermissions');
+Route::resource('authPermissions', 'AuthPermissionController');

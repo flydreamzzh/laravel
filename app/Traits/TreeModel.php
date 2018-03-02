@@ -662,6 +662,25 @@ abstract class TreeModel extends \Eloquent
     }
 
     /**
+     * @param array $except 移除项主键
+     * @return \Illuminate\Support\Collection
+     */
+    public function tree_lastNodes($except = [])
+    {
+        $q = $this
+            ->whereExists(function ($query) {
+                $query->from(DB::raw("{$this->table} b"))->whereRaw("$this->table.$this->left > b.$this->left and $this->table.$this->right < b.$this->right");
+            })
+            ->whereNotExists(function ($query) {
+                $query->from(DB::raw("{$this->table} c"))->whereRaw("$this->table.$this->left < c.$this->left and $this->table.$this->right > c.$this->right");
+            });
+        if ($except) {
+            $q = $q->whereNotIn($this->primaryKey, $except);
+        }
+        return $q->get();//这不是数组
+    }
+
+    /**
      * 判断当前对象是否     包含      某个对象
      * @param Eloquent $model
      * @return boolean
@@ -761,7 +780,7 @@ abstract class TreeModel extends \Eloquent
     {
         if (! $models)
             return $models;
-        if (is_array($models)) {
+        if (! $models instanceof self) {
             foreach ($models as $key => $model) {
                 $models[$key] = self::tree_array($model);
             }
