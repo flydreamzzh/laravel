@@ -118,20 +118,19 @@ class AuthPermissionController extends AppBaseController
      * Show the form for editing the specified AuthPermission.
      *
      * @param  int $id
-     *
+     * @param Request $request
      * @return Response
      */
-    public function edit($id)
+    public function edit($id, Request $request)
     {
-        $authPermission = $this->authPermissionRepository->findWithoutFail($id);
-
-        if (empty($authPermission)) {
-            Flash::error('Auth Permission not found');
-
-            return redirect(route('authPermissions.index'));
+        if ($menu_id = $request->get('menu')) {
+            $authPermission = $this->authPermissionRepository->findWithoutFail($id);
+            return view('auth_permissions.edit')
+                ->with('authPermission', $authPermission)
+                ->with('menu_id', $menu_id);
+        } else {
+            return view('global.params_lost');
         }
-
-        return view('auth_permissions.edit')->with('authPermission', $authPermission);
     }
 
     /**
@@ -147,16 +146,12 @@ class AuthPermissionController extends AppBaseController
         $authPermission = $this->authPermissionRepository->findWithoutFail($id);
 
         if (empty($authPermission)) {
-            Flash::error('Auth Permission not found');
-
-            return redirect(route('authPermissions.index'));
+            return $this->sendError('权限不存在！');
         }
 
         $authPermission = $this->authPermissionRepository->update($request->all(), $id);
 
-        Flash::success('Auth Permission updated successfully.');
-
-        return redirect(route('authPermissions.index'));
+        return $this->sendResponse($authPermission->toArray(), '权限更新成功');
     }
 
     /**

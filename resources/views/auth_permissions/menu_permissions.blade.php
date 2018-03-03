@@ -15,7 +15,7 @@
 
 <script type="text/html" id="permission">
     <!-- 这里的 checked 的状态只是演示 -->
-    <a href="javascript:void(0)" class="text-info" onclick="updatePermission('@{{ d.id }}')">@{{ d.name }}</a>
+    <a href="javascript:void(0)" class="text-info" onclick="updatePermission('@{{ d.edit_url }}')">@{{ d.name }}</a>
 </script>
 
 
@@ -55,8 +55,21 @@
         });
     });
 
-    function updatePermission(permission_id) {
-        alert(permission_id)
+    function updatePermission(url) {
+        var menu_id = $("#pMenu").val();
+        $.get(url, {menu: menu_id}, function (response) {
+            layui.use([], function () {
+                var layer = layui.layer;
+                layer.open({
+                    type: 1,
+                    title: "更新权限",
+                    area: ['600px', 'auto'],
+                    maxmin: true,
+                    content: response
+                });
+            })
+        })
+
     }
     
     function addPermission() {

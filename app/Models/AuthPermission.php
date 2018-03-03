@@ -1,8 +1,7 @@
 <?php
 
 namespace App\Models;
-
-use Eloquent as Model;
+use App\Models\base\Model;
 
 /**
  * Class AuthPermission
@@ -71,6 +70,18 @@ class AuthPermission extends Model
      **/
     public function authRolePermissions()
     {
-        return $this->hasMany(\App\Models\AuthRolePermission::class);
+        return $this->hasMany(\App\Models\AuthRolePermissions::class);
+    }
+
+    /**
+     * 返回路由的名称
+     * Example：Route::resource('menus', 'MenuController'); 中的menus
+     * return 'menus';
+     * @return string
+     */
+    public function route()
+    {
+        return 'authPermissions';
+        // TODO: Implement route() method.
     }
 }
