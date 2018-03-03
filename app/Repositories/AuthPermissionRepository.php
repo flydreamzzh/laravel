@@ -8,7 +8,7 @@ use InfyOm\Generator\Common\BaseRepository;
 /**
  * Class AuthPermissionRepository
  * @package App\Repositories
- * @version March 1, 2018, 11:07 am UTC
+ * @version March 3, 2018, 12:52 pm UTC
  *
  * @method AuthPermission findWithoutFail($id, $columns = ['*'])
  * @method AuthPermission find($id, $columns = ['*'])
@@ -21,7 +21,7 @@ class AuthPermissionRepository extends BaseRepository
      */
     protected $fieldSearchable = [
         'name',
-        'route',
+        'route_name',
         'status',
         'menu_id',
         'description'

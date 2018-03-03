@@ -10,10 +10,10 @@
     <p>{!! $authPermission->name !!}</p>
 </div>
 
-<!-- Route Field -->
+<!-- Route Name Field -->
 <div class="form-group">
-    {!! Form::label('route', 'Route:') !!}
-    <p>{!! $authPermission->route !!}</p>
+    {!! Form::label('route_name', 'Route Name:') !!}
+    <p>{!! $authPermission->route_name !!}</p>
 </div>
 
 <!-- Status Field -->

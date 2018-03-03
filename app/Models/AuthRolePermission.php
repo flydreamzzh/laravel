@@ -15,7 +15,7 @@ use Eloquent as Model;
  * @property string role_id
  * @property integer permission_id
  */
-class AuthRolePermissions extends Model
+class AuthRolePermission extends Model
 {
 
     public $table = 'auth_role_permissions';

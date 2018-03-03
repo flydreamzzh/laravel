@@ -8,9 +8,9 @@
 
 <!-- Route Field -->
 <div class="layui-form-item">
-    {!! Form::label('route', '路由', ['class' => 'layui-form-label']) !!}
+    {!! Form::label('route_name', '路由', ['class' => 'layui-form-label']) !!}
     <div class="layui-input-block">
-        {{ Form::text('route', null, ['required', 'lay-verify' => 'required', 'placeholder' => '请输入路由，如：menus.index', 'class' => 'layui-input']) }}
+        {{ Form::text('route_name', null, ['required', 'lay-verify' => 'required', 'placeholder' => '请输入路由，如：menus.index', 'class' => 'layui-input']) }}
     </div>
 </div>
 

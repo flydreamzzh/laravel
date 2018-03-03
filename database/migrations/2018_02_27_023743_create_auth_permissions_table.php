@@ -16,7 +16,7 @@ class CreateAuthPermissionsTable extends Migration
         Schema::create('auth_permissions', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', '25')->comment('名称');
-            $table->string('route')->unique()->comment('路由');
+            $table->string('route_name')->unique()->comment('路由');
             $table->smallInteger('status')->default(0)->comment('状态');
             $table->uuid('menu_id')->comment('隶属菜单');
             $table->string('description')->nullable()->comment('描述');

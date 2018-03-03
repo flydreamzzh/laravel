@@ -6,13 +6,13 @@ use App\Models\base\Model;
 /**
  * Class AuthPermission
  * @package App\Models
- * @version March 1, 2018, 11:07 am UTC
+ * @version March 3, 2018, 12:52 pm UTC
  *
  * @property \App\Models\Menu menu
  * @property \Illuminate\Database\Eloquent\Collection AuthRolePermission
  * @property \Illuminate\Database\Eloquent\Collection userRole
  * @property string name
- * @property string route
+ * @property string route_name
  * @property smallInteger status
  * @property string menu_id
  * @property string description
@@ -29,7 +29,7 @@ class AuthPermission extends Model
 
     public $fillable = [
         'name',
-        'route',
+        'route_name',
         'status',
         'menu_id',
         'description'
@@ -43,7 +43,7 @@ class AuthPermission extends Model
     protected $casts = [
         'id' => 'integer',
         'name' => 'string',
-        'route' => 'string',
+        'route_name' => 'string',
         'menu_id' => 'string',
         'description' => 'string'
     ];
