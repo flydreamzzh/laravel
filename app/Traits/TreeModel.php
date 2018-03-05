@@ -5,6 +5,7 @@ use Closure;
 use DB;
 use Eloquent;
 use Exception;
+use Illuminate\Database\Query\Builder;
 
 /**
  * 建立带左右值的无限归类树
@@ -668,12 +669,9 @@ abstract class TreeModel extends \Eloquent
     public function tree_lastNodes($except = [])
     {
         $q = $this
-            ->whereExists(function ($query) {
-                $query->from(DB::raw("{$this->table} b"))->whereRaw("$this->table.$this->left > b.$this->left and $this->table.$this->right < b.$this->right");
-            })
-            ->whereNotExists(function ($query) {
+            ->whereNotExists(function (Builder $query) {
                 $query->from(DB::raw("{$this->table} c"))->whereRaw("$this->table.$this->left < c.$this->left and $this->table.$this->right > c.$this->right");
-            });
+            })->orderBy('lft');
         if ($except) {
             $q = $q->whereNotIn($this->primaryKey, $except);
         }
