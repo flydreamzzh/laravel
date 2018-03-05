@@ -51,4 +51,5 @@ Route::resource('authRoles', 'AuthRoleController');
 Route::get('/permissions/permissions', 'AuthPermissionController@permissions')->name('authPermissions.permissions');
 Route::get('/authPermissions/allPermissions', 'AuthPermissionController@allPermissions')->name('authPermissions.allPermissions');
 Route::get('/authPermissions/menuPermissions', 'AuthPermissionController@menuPermissions')->name('authPermissions.menuPermissions');
+Route::patch('/authPermissions/savePermissions', 'AuthPermissionController@savePermissions')->name('authPermissions.savePermissions');
 Route::resource('authPermissions', 'AuthPermissionController');

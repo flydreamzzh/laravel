@@ -72,6 +72,23 @@ class AuthPermissionController extends AppBaseController
     }
 
     /**
+     * 保存角色权限
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function savePermissions(Request $request)
+    {
+        if ($role_id = $request->get('role')) {
+            if (! $this->authPermissionRepository->savePermissions($role_id,  $request->get('permissions'))) {
+                return $this->sendError('权限配置失败！');
+            }
+            return $this->sendResponse([], '权限配置成功！');
+        } else {
+            return $this->sendError('参数丢失！');
+        }
+    }
+
+    /**
      * Show the form for creating a new AuthPermission.
      *
      * @param Request $request

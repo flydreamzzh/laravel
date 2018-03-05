@@ -14,56 +14,74 @@
         <button class="layui-btn layui-btn-sm layui-btn-primary" id="menuCollapse" value=1 >全部折叠</button>
     </div>
 </div>
-<div class="layui-collapse" id="permissionPanel">
-    <form class="layui-form layui-form-pane" action="">
-    @foreach($menus as $menu)
-        <div class="layui-colla-item">
-            <h2 class="layui-colla-title">
-                {{ $menu->name }}
-            </h2>
-            <div class="pull-right pr10" style="position: relative;margin-top: -32px">
-                <div class="layui-btn-group">
-                    <input type="button" class="layui-btn layui-btn-xs layui-btn-primary select_all_p" value="全选">
-                    <input type="button" class="layui-btn layui-btn-xs layui-btn-primary unselect_all_p" value="全否">
+{!! Form::open(['route' => 'authPermissions.savePermissions', 'class' => "layui-form layui-form-pane", 'method' => 'patch']) !!}
+    <div class="layui-collapse" id="permissionPanel">
+        @foreach($menus as $menu)
+            <div class="layui-colla-item">
+                <h2 class="layui-colla-title">
+                    {{ $menu->name }}
+                </h2>
+                <div class="pull-right pr10" style="position: relative;margin-top: -32px">
+                    <div class="layui-btn-group">
+                        <input type="button" class="layui-btn layui-btn-xs layui-btn-primary select_all_p" value="全选">
+                        <input type="button" class="layui-btn layui-btn-xs layui-btn-primary unselect_all_p" value="全否">
+                    </div>
+                    <input type="button" class="layui-btn layui-btn-xs" value="编辑" onclick="editPermission('{{ $menu->id }}', '{{ $menu->name }}')">
                 </div>
-                <input type="button" class="layui-btn layui-btn-xs" value="编辑" onclick="editPermission('{{ $menu->id }}', '{{ $menu->name }}')">
+                <div class="layui-colla-content layui-show">
+
+                    @php($permissions = \App\Models\AuthPermission::where('menu_id', $menu->id)->get())
+
+                    @if(count($permissions))
+                        @foreach($permissions as $permission)
+                            <input type="checkbox" name="permissions[]" value="{{ $permission->id }}" lay-skin="primary" title="{{ $permission->name }}" {{ in_array($permission->id, $permissionIds) ? 'checked' : '' }}>
+                        @endforeach
+                    @else
+                        <p>暂无权限</p>
+                    @endif
+
+                </div>
             </div>
-            <div class="layui-colla-content layui-show">
-
-                @php($permissions = \App\Models\AuthPermission::where('menu_id', $menu->id)->get())
-
-                @if(count($permissions))
-                    @foreach($permissions as $permission)
-                        <input type="checkbox" name="permissions[]" lay-skin="primary" title="{{ $permission->name }}" {{ in_array($permission->id, $permissionIds) ? 'checked' : '' }}>
-                    @endforeach
-                @else
-                    <p>暂无权限</p>
-                @endif
-
-            </div>
-        </div>
-    @endforeach
-    </form>
-</div>
+        @endforeach
+    </div>
+    <input type="hidden" name="role" value="{{ $role->id }}">
+    <div class="layui-box pt10" style="text-align: right;">
+        {{ Form::submit('保存', ['lay-submit', 'lay-filter' => 'submit', 'class' => 'layui-btn']) }}
+        {{ Form::reset('重置', ['class' => 'layui-btn layui-btn-primary']) }}
+    </div>
+{!! Form::close() !!}
 
 <script type="text/javascript">
     layui.use(['form', 'element'], function() {
         var form = layui.form, element = layui.element;
         element.render();
         form.render();
+        form.on('submit(submit)', function(data){
+            $.post(data.form.action, data.field, function (response) {
+                if (response.success) {
+                    layer.msg(response.message, {icon: 1});
+                } else {
+                    layer.msg(response.message, {icon: 2});
+                }
+            }).fail(function (response) {
+                var message = response.responseJSON.message;
+                layer.msg(message, {icon: 5});
+            });
+            return false;
+        });
     });
 
     $("#selectAll_P").click(function () {
         layui.use(['form'], function() {
-            $("#permissionPanel form input[type=checkbox]").prop('checked', true);
-            var form = layui.form, element = layui.element;
+            $("#permissionPanel input[type=checkbox]").prop('checked', true);
+            var form = layui.form;
             form.render('checkbox');
         });
     });
 
     $("#unselectAll_P").click(function () {
         layui.use(['form'], function() {
-            $("#permissionPanel form input[type=checkbox]").prop('checked', false);
+            $("#permissionPanel input[type=checkbox]").prop('checked', false);
             var form = layui.form;
             form.render('checkbox');
         });
