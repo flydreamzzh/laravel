@@ -33,7 +33,7 @@
             cols: [[
                 {type: 'checkbox'},
                 {field:'name', title:'名称', width:120, templet: '#permission'},
-                {field:'route', title:'路由', width:120},
+                {field:'route_name', title:'路由', width:120},
                 {field:'description', title:'描述'},
                 {field:'status', title:'状态', width:95, templet: '#switchTpl', unresize: true}
             ]],

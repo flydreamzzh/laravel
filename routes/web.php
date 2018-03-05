@@ -49,5 +49,6 @@ Route::resource('authRoles', 'AuthRoleController');
  * -------------- PERMISSION -----------------
  */
 Route::get('/permissions/permissions', 'AuthPermissionController@permissions')->name('authPermissions.permissions');
+Route::get('/authPermissions/allPermissions', 'AuthPermissionController@allPermissions')->name('authPermissions.allPermissions');
 Route::get('/authPermissions/menuPermissions', 'AuthPermissionController@menuPermissions')->name('authPermissions.menuPermissions');
 Route::resource('authPermissions', 'AuthPermissionController');

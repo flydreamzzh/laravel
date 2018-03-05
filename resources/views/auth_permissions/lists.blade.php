@@ -17,6 +17,11 @@
             source: {
                 url: "{{ route('authRoles.table', ['is_permission' => true]) }}"
             },
+            renderNode:function(event, data) {
+                if (data.node.data.id == "{{ $role->id }}") {
+                    data.node.setActive(true);
+                }
+            },
             filter: {
                 autoApply: true,   // Re-apply last filter if lazy data is loaded
                 autoExpand: false, // Expand all branches that contain matches while filtered
@@ -29,10 +34,11 @@
                 nodata: false,      // Display a 'no data' status node if result is empty
                 mode: "hide"       // Grayout unmatched nodes (pass "hide" to remove unmatched node instead)
             },
-            click: function(event, data) {
-                console.log(data.node.data.id);
-            },
             icon: false,
+        }).on("fancytreeactivate", function(event, data){
+            $.get("{{ route('authPermissions.allPermissions') }}", {role_id: data.node.data.id}, function (response) {
+                $("#allPermissions").html(response);
+            })
         });
 
         $("#searchMenu").keyup(function (e) {

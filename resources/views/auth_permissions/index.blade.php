@@ -13,8 +13,8 @@
                 从一个业务服务系统的首端至末端的业务流程，这种服务流的监控是企业所迫切需要的。因为一旦系统出现性能慢的情况，就很难定位到底是哪里慢。
                 从一个业务服务系统的首端至末端的业务流程，这种服务流的监控是企业所迫切需要的。因为一旦系统出现性能慢的情况，就很难定位到底是哪里慢。
             </div>
-            <div class="col-md-12 p10">
-                @include('auth_permissions.table')
+            <div class="col-md-12 p10" id="allPermissions">
+                {{--@include('auth_permissions.table')--}}
             </div>
         </div>
     </div>
@@ -22,5 +22,4 @@
 
 @section('js')
     @yield('roleJS')
-    @yield('userJS')
 @endsection

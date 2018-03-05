@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateAuthPermissionRequest;
 use App\Http\Requests\UpdateAuthPermissionRequest;
 use App\Models\AuthPermission;
+use App\Models\AuthRole;
 use App\Repositories\AuthPermissionRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
@@ -30,7 +31,18 @@ class AuthPermissionController extends AppBaseController
      */
     public function index(Request $request)
     {
-        return view('auth_permissions.index');
+        $role = AuthRole::orderBy('lft')->first();
+        return view('auth_permissions.index')->with('role', $role);
+    }
+
+    public function allPermissions(Request $request)
+    {
+        if ($role_id = $request->get('role_id')) {
+            $role = AuthRole::findOrFail($role_id);
+            if ($role) {
+                return view('auth_permissions.table')->with('role', $role);
+            }
+        }
     }
 
     /**
